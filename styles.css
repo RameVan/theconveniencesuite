@@ -280,6 +280,38 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 .support span { color: var(--ink); font-size: 14px; }
 .support .icon { font-size: 17px; }
 
+/* Ko-fi popup after a download (see the <dialog> in index.html) */
+.thanks {
+  width: min(460px, calc(100% - 32px));
+  padding: 0;
+  border: 0;
+  background: var(--paper);
+  color: var(--text);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.35);
+}
+.thanks[open] { animation: thanks-in 0.2s ease-out; }
+@keyframes thanks-in { from { opacity: 0; transform: translateY(8px); } }
+.thanks::backdrop { background: rgb(11 11 11 / 0.6); }
+.thanks-stripes { height: 16px; background: var(--stripes); }
+.thanks form { position: relative; padding: 28px; }
+.thanks h2 { margin: 2px 0 10px; font-size: 30px; line-height: 1.15; }
+.thanks form > p:not(.label) { margin: 0 0 22px; color: var(--text-2); }
+.thanks button.btn { border: 0; font-family: inherit; cursor: pointer; }
+.thanks-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: none;
+  color: var(--text-3);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+.thanks-close:hover { color: var(--text); }
+
 /* An app that's announced but not downloadable yet */
 .app.upcoming { background: none; border-style: dashed; border-color: var(--dash); }
 .app.upcoming:hover { transform: none; }

@@ -11,7 +11,7 @@
   <meta property="og:url" content="https://theconveniencesuite.com/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
   <header class="hero" id="top">
@@ -200,7 +200,36 @@
     </div>
   </footer>
 
+  <!-- Shown once per visit when a download starts; the download itself is never held up. -->
+  <dialog class="thanks" id="thanks" aria-labelledby="thanks-title">
+    <div class="thanks-stripes"></div>
+    <form method="dialog">
+      <p class="label">Your download has started</p>
+      <h2 id="thanks-title">Thanks for trying <span data-thanks-app>the app</span>!</h2>
+      <p>Every app here is free and stays that way. If <span data-thanks-app>the app</span> saves you some time, a €3 coffee helps me keep building and hosting them.</p>
+      <div class="actions">
+        <a class="btn" href="https://ko-fi.com/ramevanlife" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h11v4a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5v-4Zm11 1h1.5a2.5 2.5 0 0 1 0 5H16M9 4v3m3-3v3"/></svg>Buy me a coffee · €3</a>
+        <button class="btn ghost" value="close">Maybe later</button>
+      </div>
+      <button class="thanks-close" value="close" aria-label="Close">×</button>
+    </form>
+  </dialog>
+
   <script>
+    // Ko-fi nudge after a download: once per visit, closes on Esc, the × or a click outside.
+    const thanks = document.getElementById('thanks');
+    document.querySelectorAll('a[download]').forEach(link => link.addEventListener('click', () => {
+      let asked = false;
+      try { asked = sessionStorage.getItem('tipAsked'); sessionStorage.setItem('tipAsked', '1'); } catch { /* storage blocked: just ask */ }
+      if (asked || !thanks.showModal) return;
+      const app = link.closest('.app')?.querySelector('h3')?.textContent || 'the app';
+      thanks.querySelectorAll('[data-thanks-app]').forEach(el => el.textContent = app);
+      setTimeout(() => thanks.showModal(), 400);
+    }));
+    thanks.addEventListener('click', e => { if (e.target === thanks) thanks.close(); });
+    thanks.querySelector('a').addEventListener('click', () => thanks.close());
+
     // App count and download sizes (sizes only appear when the site is served over http/https)
     document.querySelector('[data-count-apps]').textContent = document.querySelectorAll('.app:not(.upcoming)').length;
     document.getElementById('year').textContent = new Date().getFullYear();

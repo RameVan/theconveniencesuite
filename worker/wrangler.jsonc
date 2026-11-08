@@ -1,0 +1,15 @@
+// Cloudflare Worker for the owner login (see src/index.js). Deploy from this folder: npm run deploy
+{
+  "name": "suite-downloads",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  // Creates the dl.theconveniencesuite.com DNS record in the Cloudflare zone on deploy
+  "routes": [{ "pattern": "dl.theconveniencesuite.com", "custom_domain": true }],
+  "vars": {
+    "REPO": "RameVan/convenience-suite-private",
+    "ALLOWED_ORIGINS": "https://theconveniencesuite.com"
+  },
+  // 5 login attempts per minute per IP address
+  "ratelimits": [{ "name": "LOGIN_LIMIT", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }]
+}

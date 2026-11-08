@@ -1,15 +1,15 @@
 // Owner sign-in for pre-release builds.
 // The builds and their list (apps.json) live in a private GitHub repo, never on this public site.
-// "Signing in" is pasting a fine-grained GitHub token that can read that repo; this page sends it
-// only to api.github.com (see the CSP in private.html) and keeps it in this browser's storage.
+// The Worker in worker/ (dl.theconveniencesuite.com) checks the username and password, sets an
+// HttpOnly session cookie and serves the list and files; this page never sees a token or the password
+// again after sending it.
 //
 // apps.json in the private repo:
 // { "apps": [ { "name": "Opt Out", "tag": "Web app · Chrome extension", "version": "0.1.0",
 //     "desc": "…", "chips": ["…"], "note": "…", "icon": "icons/optout.svg",
 //     "colors": { "ink": "#b4541c", "a": "#f08a2c", "b": "#f6b73c" },
 //     "files": [ { "label": "Extension", "path": "builds/optout-extension-0.1.0.zip" } ] } ] }
-const REPO = 'RameVan/convenience-suite-private';
-const KEY = 'suitePrivateToken';
+const API = location.hostname === 'localhost' ? 'http://localhost:8788' : 'https://dl.theconveniencesuite.com';
 
 const $ = sel => document.querySelector(sel);
 const views = { signin: $('[data-view="signin"]'), list: $('[data-view="list"]') };
@@ -18,39 +18,26 @@ const errorBox = $('[data-error]');
 const signout = $('[data-signout]');
 const status = $('[data-status]');
 const grid = $('[data-apps]');
-const objectUrls = [];
 
-const store = {
-  get() {
-    try { return sessionStorage.getItem(KEY) || localStorage.getItem(KEY); } catch { return null; }
-  },
-  set(token, remember) {
-    try { (remember ? localStorage : sessionStorage).setItem(KEY, token); } catch { /* storage blocked: signed in for this page only */ }
-  },
-  clear() {
-    try { sessionStorage.removeItem(KEY); localStorage.removeItem(KEY); } catch { /* nothing stored */ }
-  },
-};
-let token = store.get();
+// The earlier version of this page kept a GitHub token in the browser; drop it
+try { localStorage.removeItem('suitePrivateToken'); sessionStorage.removeItem('suitePrivateToken'); } catch { /* storage blocked */ }
 
-class AuthError extends Error {}
+class SignedOut extends Error {}
 
-// Reads a file from the private repo. Contents API "raw" handles files up to 100 MB and,
-// unlike release-asset downloads, sends CORS headers, so it works straight from the browser.
-async function readFile(path) {
-  const url = `https://api.github.com/repos/${REPO}/contents/${path.split('/').map(encodeURIComponent).join('/')}`;
-  const res = await fetch(url, {
-    headers: { Accept: 'application/vnd.github.raw', Authorization: `Bearer ${token}`, 'X-GitHub-Api-Version': '2022-11-28' },
-    cache: 'no-store',
-  });
-  if (res.status === 401) throw new AuthError("GitHub didn't accept that token. It may be mistyped, expired or revoked.");
-  if (res.status === 403 || res.status === 404) {
-    const missing = path === 'apps.json' ? `This token can't read ${REPO}. Give it Contents: read on that repository.` : `${path} isn't in the private repo.`;
-    throw new (path === 'apps.json' ? AuthError : Error)(missing);
+async function api(path, options = {}) {
+  let res;
+  try {
+    res = await fetch(API + path, { credentials: 'include', cache: 'no-store', ...options });
+  } catch {
+    throw new Error("Couldn't reach the sign-in server. Check your connection and try again.");
   }
-  if (!res.ok) throw new Error(`GitHub answered ${res.status}. Try again in a minute.`);
-  return res.blob();
+  const body = await res.json().catch(() => ({}));
+  if (res.status === 401 && path !== '/login') throw new SignedOut();
+  if (!res.ok) throw new Error(body.error || `Something went wrong (${res.status}).`);
+  return body;
 }
+
+const fileUrl = path => `${API}/file/${path.split('/').map(encodeURIComponent).join('/')}`;
 
 function show(name) {
   for (const [key, el] of Object.entries(views)) el.hidden = key !== name;
@@ -62,43 +49,9 @@ function fail(message) {
   errorBox.hidden = false;
 }
 
-function sizeText(bytes) {
-  return bytes > 1e6 ? (bytes / 1e6).toFixed(1) + ' MB' : Math.ceil(bytes / 1e3) + ' KB';
-}
-
 const downloadIcon = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>';
 
-function downloadButton(file, primary) {
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = primary ? 'btn' : 'btn ghost';
-  btn.innerHTML = downloadIcon;
-  btn.append(String(file.label || 'Download'));
-  btn.addEventListener('click', async () => {
-    const label = btn.lastChild.textContent;
-    btn.disabled = true;
-    btn.lastChild.textContent = 'Downloading…';
-    try {
-      const blob = await readFile(file.path);
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = file.path.split('/').pop();
-      document.body.append(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(a.href), 60_000);
-    } catch (err) {
-      if (err instanceof AuthError) return signOut(err.message);
-      status.textContent = err.message;
-    } finally {
-      btn.disabled = false;
-      btn.lastChild.textContent = label;
-    }
-  });
-  return btn;
-}
-
-// Everything from apps.json goes in as text or CSS values, never as HTML.
+// Everything from apps.json goes in as text, attributes or CSS values, never as HTML.
 function card(app) {
   const el = $('#app-card').content.firstElementChild.cloneNode(true);
   const color = /^#[0-9a-f]{3,8}$/i;
@@ -115,18 +68,20 @@ function card(app) {
   if (!chips.children.length) chips.remove();
   el.querySelector('.version').textContent = [app.version && `v${app.version}`, 'Pre-release'].filter(Boolean).join(' · ');
   const actions = el.querySelector('.actions');
-  (app.files || []).forEach((file, i) => file?.path && actions.append(downloadButton(file, i === 0)));
+  (app.files || []).filter(file => file?.path).forEach((file, i) => {
+    const link = document.createElement('a');
+    link.className = i ? 'btn ghost' : 'btn';
+    link.href = fileUrl(file.path); // the Worker sends it as an attachment, with the session cookie
+    link.innerHTML = downloadIcon;
+    link.append(String(file.label || 'Download'));
+    actions.append(link);
+  });
   if (app.note) Object.assign(el.querySelector('.upcoming-note'), { textContent: app.note, hidden: false });
 
   const icon = el.querySelector('.app-icon');
   if (app.icon) {
-    // GitHub labels raw files application/vnd.github.raw; an <img> needs the real image type
-    const type = { svg: 'image/svg+xml', png: 'image/png', webp: 'image/webp' }[app.icon.split('.').pop().toLowerCase()];
-    readFile(app.icon).then(blob => {
-      const url = URL.createObjectURL(new Blob([blob], { type }));
-      objectUrls.push(url);
-      icon.src = url;
-    }).catch(() => icon.remove());
+    icon.addEventListener('error', () => icon.remove());
+    icon.src = fileUrl(app.icon);
   } else icon.remove();
   return el;
 }
@@ -136,40 +91,54 @@ async function load() {
   status.textContent = 'Loading…';
   grid.replaceChildren();
   try {
-    const list = JSON.parse(await (await readFile('apps.json')).text());
+    const list = await api('/apps');
     const apps = Array.isArray(list.apps) ? list.apps : [];
     grid.append(...apps.map(card));
     if (!apps.length) grid.append(Object.assign(document.createElement('p'), { className: 'empty', textContent: 'Nothing waiting right now. Everything is public.' }));
-    status.textContent = `${apps.length} unreleased ${apps.length === 1 ? 'app' : 'apps'} · from ${REPO}`;
+    status.textContent = `${apps.length} unreleased ${apps.length === 1 ? 'app' : 'apps'}`;
   } catch (err) {
-    if (err instanceof AuthError) return signOut(err.message);
-    status.textContent = err instanceof SyntaxError ? "apps.json in the private repo isn't valid JSON." : err.message;
+    if (err instanceof SignedOut) return showSignIn();
+    status.textContent = err.message;
   }
 }
 
-function signOut(message) {
-  store.clear();
-  token = null;
-  objectUrls.splice(0).forEach(URL.revokeObjectURL);
+function showSignIn(message) {
   grid.replaceChildren();
-  form.reset();
   errorBox.hidden = true;
   if (message) fail(message);
   show('signin');
 }
 
-// A token GitHub rejects is cleared again by load() -> signOut(), which shows why
-form.addEventListener('submit', e => {
+form.addEventListener('submit', async e => {
   e.preventDefault();
   errorBox.hidden = true;
-  const value = form.token.value.trim();
-  if (!/^(github_pat_|ghp_|gho_)\w{20,}$/.test(value)) return fail('That doesn\'t look like a GitHub token. It starts with "github_pat_".');
-  token = value;
-  store.set(token, form.remember.checked);
-  form.reset();
-  load();
+  const username = form.username.value.trim();
+  const password = form.password.value;
+  if (!username || !password) return fail('Enter your username and password.');
+  const button = form.querySelector('button[type="submit"]');
+  button.disabled = true;
+  try {
+    await api('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, remember: form.remember.checked }),
+    });
+    form.reset();
+    load();
+  } catch (err) {
+    form.password.value = '';
+    fail(err.message);
+  } finally {
+    button.disabled = false;
+  }
 });
 
-signout.addEventListener('click', () => signOut());
+signout.addEventListener('click', async () => {
+  try { await api('/logout', { method: 'POST' }); } catch { /* cookie is cleared server-side; show the form anyway */ }
+  form.reset();
+  showSignIn();
+});
+
 $('#year').textContent = new Date().getFullYear();
-token ? load() : show('signin');
+// Already signed in (session cookie still valid)? Go straight to the list.
+api('/me').then(load, () => show('signin'));

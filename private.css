@@ -22,14 +22,15 @@ button.btn { border: 0; font-family: inherit; cursor: pointer; }
 .signin .label { margin: 0; }
 .signin form { display: flex; flex-direction: column; gap: 10px; }
 .signin label[for] { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-2); }
-.signin input[type="password"] {
+.signin input:is([type="text"], [type="password"]) {
   width: 100%;
   padding: 12px 14px;
+  margin-bottom: 6px;
   border: 1px solid var(--dash);
   border-radius: 4px;
   background: var(--paper);
   color: var(--text);
-  font: 14px ui-monospace, "SF Mono", Consolas, monospace;
+  font: 15px var(--sans);
 }
 .signin input:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-color: var(--ink); }
 .check { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--text-2); }

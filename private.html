@@ -6,13 +6,13 @@
   <title>Pre-release · The Convenience Suite</title>
   <meta name="robots" content="noindex, nofollow">
   <meta name="referrer" content="no-referrer">
-  <!-- The token only ever goes to api.github.com; nothing on this page loads from anywhere else. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' blob:; connect-src https://api.github.com; form-action 'none'; base-uri 'none'">
+  <!-- The login goes only to the Worker at dl.theconveniencesuite.com (localhost:8788 is `npm run dev` in worker/). -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' https://dl.theconveniencesuite.com http://localhost:8788; connect-src https://dl.theconveniencesuite.com http://localhost:8788; form-action 'none'; base-uri 'none'">
   <meta name="theme-color" content="#0b0b0b">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css?v=9">
-  <link rel="stylesheet" href="private.css?v=1">
+  <link rel="stylesheet" href="private.css?v=2">
 </head>
 <body>
   <header class="hero" id="top">
@@ -30,7 +30,7 @@
       <div class="hero-text">
         <p class="label">Owner only · not public yet</p>
         <h1>Pre-release downloads.</h1>
-        <p class="lede">Builds that are still being tested. They live in a private GitHub repository, so only a token that can read it gets them.</p>
+        <p class="lede">Builds that are still being tested. They live in a private repository and are only handed out after you sign in.</p>
       </div>
     </div>
     <div class="stripes"></div>
@@ -40,28 +40,20 @@
     <!-- Signed out -->
     <section class="signin" data-view="signin" aria-labelledby="signin-title">
       <p class="label">Sign in</p>
-      <h2 id="signin-title">Paste your GitHub token.</h2>
-      <p class="hint">Use a fine-grained token with <b>Contents: read</b> on <code>RameVan/convenience-suite-private</code> only. It's sent to GitHub and nowhere else.</p>
+      <h2 id="signin-title">Owner sign-in.</h2>
+      <p class="hint">For the person who builds these apps. Everyone else can find the released ones on the <a href="./">main page</a>.</p>
       <form data-signin novalidate>
-        <label for="token">Token</label>
-        <input id="token" name="token" type="password" autocomplete="current-password" spellcheck="false" placeholder="github_pat_…" required>
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
         <label class="check"><input type="checkbox" name="remember"> Keep me signed in on this device</label>
         <p class="error" role="alert" data-error hidden></p>
         <div class="actions">
           <button class="btn" type="submit">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M14 4h5v16h-5"/></svg>Sign in</button>
-          <a class="btn ghost" href="https://github.com/settings/personal-access-tokens/new?name=Convenience+Suite+pre-release&description=Read+unreleased+builds+on+theconveniencesuite.com&target_name=RameVan&expires_in=90&contents=read" target="_blank" rel="noopener">Create a token</a>
         </div>
       </form>
-      <details>
-        <summary>How to make the token</summary>
-        <ol>
-          <li>Open <b>Create a token</b> (GitHub, signed in as RameVan).</li>
-          <li>Under <b>Repository access</b> choose <b>Only select repositories</b> → <code>convenience-suite-private</code>.</li>
-          <li>Under <b>Permissions</b> set <b>Contents</b> to <b>Read-only</b>. Nothing else.</li>
-          <li>Generate it, copy it and paste it here. Revoke it on GitHub any time to sign out everywhere.</li>
-        </ol>
-      </details>
     </section>
 
     <!-- Signed in -->
@@ -102,6 +94,6 @@
     </article>
   </template>
 
-  <script src="private.js?v=1"></script>
+  <script src="private.js?v=2"></script>
 </body>
 </html>

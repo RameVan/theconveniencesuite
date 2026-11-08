@@ -1,0 +1,14 @@
+{
+  "name": "suite-downloads",
+  "private": true,
+  "type": "module",
+  "description": "Owner login for pre-release downloads on theconveniencesuite.com (Cloudflare Worker)",
+  "scripts": {
+    "dev": "wrangler dev --port 8788",
+    "deploy": "wrangler deploy",
+    "set-login": "node set-login.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.158.0"
+  }
+}

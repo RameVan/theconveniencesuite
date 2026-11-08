@@ -134,9 +134,31 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 .hero-art { flex: 1 1 320px; display: flex; justify-content: center; }
 .case { position: relative; width: 300px; max-width: 100%; color: var(--hero-text); }
 .case svg { display: block; width: 100%; height: auto; }
-.case-logos { position: absolute; left: 50%; top: 44%; width: 64%; display: flex; justify-content: space-between; transform: translate(-50%, -50%); }
-.case-logos img { width: 30%; height: auto; border-radius: 22%; box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hero-text) 45%, transparent); }
-.case-logos img:nth-child(2) { transform: translateY(-14%); }
+.case .case-front { position: absolute; inset: 0; pointer-events: none; }
+.floater, .floor-glow {
+  position: absolute;
+  left: calc(var(--x) / 240 * 100%);
+  top: calc(var(--y) / 260 * 100%);
+  translate: -50% -50%;
+  animation: 6s ease-in-out var(--d) infinite;
+}
+.floater {
+  width: calc(var(--s) * 1%);
+  height: auto;
+  border-radius: 22%;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hero-text) 40%, transparent), 0 10px 24px rgb(0 0 0 / 0.6);
+  animation-name: float;
+}
+.floater.back { filter: brightness(0.8); }
+.floor-glow {
+  width: 28%;
+  height: 9%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 60%, transparent), transparent);
+  animation-name: glow;
+}
+@keyframes float { 50% { transform: translateY(-9%) rotate(-2deg); } }
+@keyframes glow { 50% { transform: scale(0.75); opacity: 0.55; } }
 
 .stripes { height: 72px; background: var(--stripes); }
 
@@ -300,5 +322,5 @@ details b { color: var(--text); }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  * { transition: none !important; }
+  * { transition: none !important; animation: none !important; }
 }

@@ -38,13 +38,17 @@
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
+        <!-- The case is drawn in two layers: hidden edges behind the logos, glass faces and visible edges in front.
+             --x/--y place each logo in the SVG's 240×260 coordinates; the glow sits on the floor below it. -->
         <div class="case">
-          <svg viewBox="0 0 240 260" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M30 180 120 130 210 180M120 20v110" stroke-dasharray="4 4" opacity=".35"/><path d="M120 20 210 70 120 120 30 70Z"/><path d="M30 70v110l90 50 90-50V70M120 120v110"/><path d="M44 96v54M54 102v30" opacity=".5"/><path d="M30 180 120 230 210 180v18l-90 50-90-50Z" fill="#f4f1ea"/></svg>
-          <div class="case-logos">
-            <img src="assets/turndown.svg" alt="">
-            <img src="assets/pantrypip.svg" alt="">
-            <img src="assets/optout.svg" alt="">
-          </div>
+          <svg class="case-back" viewBox="0 0 240 260" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M30 180 120 130 210 180M120 20v110" stroke-dasharray="4 4" opacity=".35"/></svg>
+          <span class="floor-glow" style="--x: 120; --y: 162; --c: #6a994e; --d: -1.6s"></span>
+          <span class="floor-glow" style="--x: 80; --y: 190; --c: #e4502b; --d: 0s"></span>
+          <span class="floor-glow" style="--x: 162; --y: 196; --c: #f08a2c; --d: -3.2s"></span>
+          <img class="floater back" src="assets/pantrypip.svg" alt="" style="--x: 120; --y: 88; --s: 19; --d: -1.6s">
+          <img class="floater" src="assets/turndown.svg" alt="" style="--x: 80; --y: 126; --s: 22; --d: 0s">
+          <img class="floater" src="assets/optout.svg" alt="" style="--x: 162; --y: 134; --s: 22; --d: -3.2s">
+          <svg class="case-front" viewBox="0 0 240 260" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M120 20 210 70 120 120 30 70Z" fill="currentColor" fill-opacity=".07" stroke="none"/><path d="M30 70 120 120v110L30 180Z" fill="currentColor" fill-opacity=".035" stroke="none"/><path d="M120 20 210 70 120 120 30 70Z"/><path d="M30 70v110l90 50 90-50V70M120 120v110"/><path d="M44 96v54M54 102v30" opacity=".5"/><path d="M30 180 120 230 210 180v18l-90 50-90-50Z" fill="#f4f1ea"/></svg>
         </div>
       </div>
     </div>
@@ -96,7 +100,7 @@
           </details>
         </article>
 
-        <article class="app" style="--app-ink: #2f5d50; --app-a: #2f5d50; --app-b: #f2a541">
+        <article class="app" style="--app-ink: #4c7536; --app-a: #6a994e; --app-b: #f5b335">
           <div class="app-top">
             <img class="app-icon" src="assets/pantrypip.svg" alt="" width="60" height="60">
             <span class="tag">Web app · Android · iPhone</span>

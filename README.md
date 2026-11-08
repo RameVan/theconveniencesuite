@@ -6,4 +6,4 @@ Source of [theconveniencesuite.com](https://theconveniencesuite.com): a static d
 - `fonts/`: the self-hosted Newsreader headline font (SIL Open Font License), so the page makes no third-party requests.
 - `downloads/`, `assets/`: app zips and icons, rebuilt by `build-downloads.ps1` from the app projects next to this folder.
 
-To update: run `build-downloads.ps1`, update versions in `index.html` if they changed, then commit and push. The site redeploys automatically.
+To update: run `build-downloads.ps1`, update versions in `index.html` if they changed, bump the `styles.css?v=` number in `index.html` when the CSS changed (browsers cache it for 10 minutes), then commit and push. The site redeploys automatically.

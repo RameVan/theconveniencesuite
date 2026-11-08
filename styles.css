@@ -117,6 +117,8 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 .nav a:not(.btn) { color: #cfcac0; text-decoration: none; }
 .nav a:not(.btn):hover { color: #ffffff; }
 .nav .btn { padding: 10px 16px; }
+.nav .nav-tip { display: inline-flex; align-items: center; gap: 6px; }
+.nav .nav-tip .icon { font-size: 15px; color: var(--yellow); }
 
 .hero-body {
   display: flex;
@@ -247,23 +249,7 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 
 [hidden] { display: none !important; }
 
-/* Ko-fi tip, under an app's buttons and in About */
-.tip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px dashed color-mix(in srgb, var(--app-ink) 45%, transparent);
-  color: var(--text-2);
-  font-size: 13px;
-  text-decoration: none;
-  transition: background 0.15s, border-color 0.15s;
-}
-.tip .icon { flex: none; font-size: 17px; color: var(--app-ink); }
-.tip b { color: var(--app-ink); font-weight: 600; }
-.tip:hover { background: color-mix(in srgb, var(--app-a) 8%, transparent); border-color: var(--app-ink); }
-
+/* Ko-fi support box in About */
 .support {
   scroll-margin-top: 16px;
   display: flex;

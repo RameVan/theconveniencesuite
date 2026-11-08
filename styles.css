@@ -134,7 +134,9 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 .hero-art { flex: 1 1 320px; display: flex; justify-content: center; }
 .case { position: relative; width: 300px; max-width: 100%; color: var(--hero-text); }
 .case svg { display: block; width: 100%; height: auto; }
-.case img { position: absolute; left: 50%; top: 42%; width: 28%; height: auto; transform: translate(-50%, -50%); }
+.case-logos { position: absolute; left: 50%; top: 44%; width: 64%; display: flex; justify-content: space-between; transform: translate(-50%, -50%); }
+.case-logos img { width: 30%; height: auto; border-radius: 22%; box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hero-text) 45%, transparent); }
+.case-logos img:nth-child(2) { transform: translateY(-14%); }
 
 .stripes { height: 72px; background: var(--stripes); }
 

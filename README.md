@@ -2,7 +2,7 @@
 
 Source of [theconveniencesuite.com](https://theconveniencesuite.com): a static download page for my apps, hosted on GitHub Pages.
 
-- `index.html`, `styles.css`: the page (black hero, 70s stripe band, light app cards).
+- `index.html`, `styles.css`: the page (black hero, 70s stripe band, light app cards for Turndown, PantryPip and Opt Out).
 - `fonts/`: the self-hosted Newsreader headline font (SIL Open Font License), so the page makes no third-party requests.
 - `downloads/`, `assets/`: app zips and icons, rebuilt by `build-downloads.ps1` from the app projects next to this folder.
 

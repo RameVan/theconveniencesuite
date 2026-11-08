@@ -40,7 +40,11 @@
       <div class="hero-art" aria-hidden="true">
         <div class="case">
           <svg viewBox="0 0 240 260" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M30 180 120 130 210 180M120 20v110" stroke-dasharray="4 4" opacity=".35"/><path d="M120 20 210 70 120 120 30 70Z"/><path d="M30 70v110l90 50 90-50V70M120 120v110"/><path d="M44 96v54M54 102v30" opacity=".5"/><path d="M30 180 120 230 210 180v18l-90 50-90-50Z" fill="#f4f1ea"/></svg>
-          <img src="assets/turndown.png" alt="">
+          <div class="case-logos">
+            <img src="assets/turndown.svg" alt="">
+            <img src="assets/pantrypip.svg" alt="">
+            <img src="assets/optout.svg" alt="">
+          </div>
         </div>
       </div>
     </div>
@@ -54,7 +58,7 @@
           <p class="label">The suite</p>
           <h2 id="apps-title">Download an app.</h2>
         </div>
-        <div class="tile"><span>Apps in the suite</span><b data-count-apps>2</b></div>
+        <div class="tile"><span>Apps in the suite</span><b data-count-apps>3</b></div>
         <div class="tile amber"><span>Price, forever</span><b>€0</b></div>
       </div>
 
@@ -63,7 +67,7 @@
 
         <article class="app" style="--app-ink: #c2361b; --app-a: #e4502b; --app-b: #b32620">
           <div class="app-top">
-            <img class="app-icon" src="assets/turndown.png" alt="" width="60" height="60">
+            <img class="app-icon" src="assets/turndown.svg" alt="" width="60" height="60">
             <span class="tag">Chrome extension</span>
           </div>
           <h3>Turndown</h3>
@@ -135,6 +139,57 @@
           </details>
         </article>
 
+        <article class="app" style="--app-ink: #b4541c; --app-a: #f08a2c; --app-b: #f6b73c">
+          <div class="app-top">
+            <img class="app-icon" src="assets/optout.svg" alt="" width="60" height="60">
+            <span class="tag">Web app · Chrome extension</span>
+          </div>
+          <h3>Opt Out</h3>
+          <p class="desc">Clears the newsletters out of your Gmail. It finds every mailing list you're on, sorts them into categories, and unsubscribes in bulk while keeping banking, orders and other important mail safe. It also tells you which senders have had a data breach.</p>
+          <ul class="chips">
+            <li>Bulk unsubscribe</li>
+            <li>Protects important mail</li>
+            <li>Breach alerts</li>
+          </ul>
+          <div class="app-bar"></div>
+          <div class="app-foot">
+            <span class="version">v0.1.0 · runs on your computer<span class="size" data-size="downloads/optout-0.1.0.zip"></span></span>
+            <div class="actions">
+              <a class="btn" href="downloads/optout-0.1.0.zip" download>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Download</a>
+              <a class="btn ghost" href="downloads/optout-extension-0.1.0.zip" download>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Extension</a>
+            </div>
+          </div>
+          <details>
+            <summary>Run it on your computer</summary>
+            <ol>
+              <li>Install <b>Node.js 24</b> or newer, then unzip the download.</li>
+              <li>In that folder run <code>npm install</code>, then <code>npm run build</code>.</li>
+              <li>Copy <code>server/.env.example</code> to <code>server/.env</code>.</li>
+              <li>Run <code>npm start</code> and open <code>http://localhost:8790</code>.</li>
+            </ol>
+            <p>To look around first, set <code>DEV_FAKE_PROVIDER=true</code> in <code>server/.env</code> and choose <b>Use development fixture mailbox</b> when signing in.</p>
+          </details>
+          <details>
+            <summary>Connect your Gmail</summary>
+            <ol>
+              <li>Create a Google Cloud project with the Gmail API and an OAuth client, as described in <code>docs/SETUP.md</code>.</li>
+              <li>Run <code>npm run setup:google --workspace server</code> and paste in the client ID and secret.</li>
+              <li>Restart with <code>npm start</code>, sign in and connect your mailbox.</li>
+            </ol>
+            <p>Unsubscribes start in <b>dry-run</b> mode: they're checked and logged but not sent. Set <code>UNSUBSCRIBE_MODE=live</code> when you're ready.</p>
+          </details>
+          <details>
+            <summary>Add the browser extension</summary>
+            <ol>
+              <li>Unzip the extension and open <code>chrome://extensions</code> with <b>Developer mode</b> on.</li>
+              <li>Click <b>Load unpacked</b> and pick the unzipped folder.</li>
+              <li>With Opt Out running and you signed in, click its toolbar icon and press <b>Connect</b>.</li>
+            </ol>
+          </details>
+        </article>
+
       </div>
 
       <p class="soon"><b>More on the way.</b> New tools land here when they are ready. Each one is small, does one thing well and never asks you to sign up.</p>
@@ -142,7 +197,7 @@
 
     <section id="about" class="wrap about" aria-labelledby="about-title">
       <h2 id="about-title">Built for myself first. Shared because they work.</h2>
-      <p class="about-intro">These started as tools I built for myself: to stop clicking through cookie walls and to stop forgetting what's in the cupboard. They worked well enough that I wanted to share them.</p>
+      <p class="about-intro">These started as tools I built for myself: to stop clicking through cookie walls, to stop forgetting what's in the cupboard and to get the newsletters out of my inbox. They worked well enough that I wanted to share them.</p>
       <ul class="promises">
         <li><b>No accounts</b><span>Download and go. Nothing to sign up for.</span></li>
         <li><b>Your data stays yours</b><span>Apps run on your device or your own server.</span></li>

@@ -247,7 +247,7 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 
 [hidden] { display: none !important; }
 
-/* Optional Ko-fi tip, under an app's buttons and in About */
+/* Ko-fi tip, under an app's buttons and in About */
 .tip {
   display: flex;
   align-items: center;
@@ -265,6 +265,7 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 .tip:hover { background: color-mix(in srgb, var(--app-a) 8%, transparent); border-color: var(--app-ink); }
 
 .support {
+  scroll-margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -357,10 +358,12 @@ details b { color: var(--text); }
   font-size: 12px;
   color: var(--text-3);
 }
+.footer a { color: inherit; }
+.footer a:hover { color: var(--text-2); }
 
 /* --- Small screens ------------------------------------------------------ */
 @media (max-width: 560px) {
-  .wrap { padding: 0 16px; }
+  .wrap { padding-inline: 16px; }
   .hero-body { padding-block: 32px 40px; gap: 32px; }
   .nav { gap: 16px; }
   .case { width: 200px; }

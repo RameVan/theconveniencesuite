@@ -33,7 +33,7 @@
       <div class="stats">
         <div class="stat"><span class="stat-icon" style="--c: var(--accent)">
           <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg></span>
-          <div><b data-count-apps>3</b><small>Apps</small></div></div>
+          <div><b data-count-apps>2</b><small>Apps</small></div></div>
         <div class="stat"><span class="stat-icon" style="--c: var(--amber)">
           <svg viewBox="0 0 24 24"><path d="M12 3v18M7 7.5c0-1.9 2.2-3 5-3s5 1.1 5 3-2.2 2.6-5 3.2-5 1.4-5 3.3 2.2 3.5 5 3.5 5-1.3 5-3.2"/></svg></span>
           <div><b>€0</b><small>Free, forever</small></div></div>
@@ -62,25 +62,25 @@
       <!-- One <article> per app. To add an app: copy a card, change --app-accent, the text, icon and download link. -->
       <div class="grid">
 
-        <article class="card app" data-kind="browser" style="--app-accent: var(--amber)">
+        <article class="card app" data-kind="browser" style="--app-accent: var(--copper)">
           <div class="app-head">
-            <img class="app-icon" src="assets/cookie-denier.png" alt="" width="56" height="56">
+            <img class="app-icon" src="assets/turndown.png" alt="" width="56" height="56">
             <div>
               <span class="tag">Chrome extension</span>
-              <h3>Cookie Denier</h3>
-              <p class="version">v1.0.0 · Chrome, Edge, Brave</p>
+              <h3>Turndown</h3>
+              <p class="version">v1.1.0 · Chrome, Edge, Brave</p>
             </div>
           </div>
-          <p class="desc">Automatically says <em>no</em> to cookie banners. It recognises the big consent platforms, finds "Reject all" in ten languages, and switches off every vendor and legitimate-interest toggle when a site hides them behind settings.</p>
+          <p class="desc">Turns down cookie banners for you. It recognises the big consent platforms, finds "Reject all" in ten languages, and switches off every vendor and legitimate-interest toggle when a site hides them behind settings.</p>
           <ul class="chips">
             <li><span class="dot"></span>20+ consent platforms</li>
             <li><span class="dot"></span>Refuses legitimate interest</li>
             <li><span class="dot"></span>Per-site on/off</li>
           </ul>
           <div class="actions">
-            <a class="btn" href="downloads/cookie-denier-1.0.0.zip" download>
+            <a class="btn" href="downloads/turndown-1.1.0.zip" download>
               <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Download</a>
-            <span class="size" data-size="downloads/cookie-denier-1.0.0.zip"></span>
+            <span class="size" data-size="downloads/turndown-1.1.0.zip"></span>
           </div>
           <details>
             <summary>How to install</summary>
@@ -136,36 +136,6 @@
           </details>
         </article>
 
-        <article class="card app" data-kind="selfhosted" style="--app-accent: var(--teal)">
-          <div class="app-head">
-            <img class="app-icon" src="assets/slate.svg" alt="" width="56" height="56">
-            <div>
-              <span class="tag">Self-hosted web app</span>
-              <h3>Slate</h3>
-              <p class="version">v0.1.0 · Windows, macOS, Linux, Docker</p>
-            </div>
-          </div>
-          <p class="desc">Your own workspace for notes, docs and databases. Nest pages as deep as you like, write in a block editor, and build real databases with board, calendar, timeline and chart views. Every feature for every user.</p>
-          <ul class="chips">
-            <li><span class="dot"></span>Block editor</li>
-            <li><span class="dot"></span>Databases &amp; formulas</li>
-            <li><span class="dot"></span>Live co-editing</li>
-          </ul>
-          <div class="actions">
-            <a class="btn" href="downloads/slate-0.1.0.zip" download>
-              <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Download</a>
-            <span class="size" data-size="downloads/slate-0.1.0.zip"></span>
-          </div>
-          <details>
-            <summary>How to install</summary>
-            <ol>
-              <li>Install <b>Node.js 20</b> or newer (24 recommended) and unzip the download.</li>
-              <li>Run <code>npm install</code>, <code>npm run build</code>, then <code>npm start</code>.</li>
-              <li>Open <code>http://localhost:3000</code>. The first account you create is the admin.</li>
-              <li>Prefer Docker? Copy <code>.env.example</code> to <code>.env</code>, set a password, and run <code>docker compose up -d</code>.</li>
-            </ol>
-          </details>
-        </article>
 
         <article class="card app soon" data-kind="all">
           <div class="app-head">
@@ -186,7 +156,7 @@
       <div>
         <p class="eyebrow">About</p>
         <h2 id="about-title">Why a convenience suite?</h2>
-        <p>These started as tools I built for myself: to stop clicking through cookie walls, to stop forgetting what's in the cupboard, to keep my notes somewhere I own. They worked well enough that I wanted to share them.</p>
+        <p>These started as tools I built for myself: to stop clicking through cookie walls, and to stop forgetting what's in the cupboard. They worked well enough that I wanted to share them.</p>
       </div>
       <ul class="promises">
         <li><span class="dot" style="--c: var(--accent)"></span><div><b>No accounts</b><small>Download and go. Nothing to sign up for.</small></div></li>

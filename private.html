@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pre-release · The Convenience Suite</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <!-- The token only ever goes to api.github.com; nothing on this page loads from anywhere else. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' blob:; connect-src https://api.github.com; form-action 'none'; base-uri 'none'">
+  <meta name="theme-color" content="#0b0b0b">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="private.css?v=1">
+</head>
+<body>
+  <header class="hero" id="top">
+    <div class="wrap topbar">
+      <a class="brand" href="./" aria-label="The Convenience Suite home">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="10" height="10" fill="#f6b73c"/><rect x="12" width="10" height="10" fill="#f08a2c"/><rect y="12" width="10" height="10" fill="#e4502b"/><rect x="12" y="12" width="10" height="10" fill="#ffffff"/></svg>
+        <span>The Convenience Suite</span>
+      </a>
+      <nav class="nav" aria-label="Sections">
+        <a href="./">Public apps</a>
+        <button class="btn light" type="button" data-signout hidden>Sign out</button>
+      </nav>
+    </div>
+    <div class="wrap hero-body private-hero">
+      <div class="hero-text">
+        <p class="label">Owner only · not public yet</p>
+        <h1>Pre-release downloads.</h1>
+        <p class="lede">Builds that are still being tested. They live in a private GitHub repository, so only a token that can read it gets them.</p>
+      </div>
+    </div>
+    <div class="stripes"></div>
+  </header>
+
+  <main class="wrap private">
+    <!-- Signed out -->
+    <section class="signin" data-view="signin" aria-labelledby="signin-title">
+      <p class="label">Sign in</p>
+      <h2 id="signin-title">Paste your GitHub token.</h2>
+      <p class="hint">Use a fine-grained token with <b>Contents: read</b> on <code>RameVan/convenience-suite-private</code> only. It's sent to GitHub and nowhere else.</p>
+      <form data-signin novalidate>
+        <label for="token">Token</label>
+        <input id="token" name="token" type="password" autocomplete="current-password" spellcheck="false" placeholder="github_pat_…" required>
+        <label class="check"><input type="checkbox" name="remember"> Keep me signed in on this device</label>
+        <p class="error" role="alert" data-error hidden></p>
+        <div class="actions">
+          <button class="btn" type="submit">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M14 4h5v16h-5"/></svg>Sign in</button>
+          <a class="btn ghost" href="https://github.com/settings/personal-access-tokens/new?name=Convenience+Suite+pre-release&description=Read+unreleased+builds+on+theconveniencesuite.com&target_name=RameVan&expires_in=90&contents=read" target="_blank" rel="noopener">Create a token</a>
+        </div>
+      </form>
+      <details>
+        <summary>How to make the token</summary>
+        <ol>
+          <li>Open <b>Create a token</b> (GitHub, signed in as RameVan).</li>
+          <li>Under <b>Repository access</b> choose <b>Only select repositories</b> → <code>convenience-suite-private</code>.</li>
+          <li>Under <b>Permissions</b> set <b>Contents</b> to <b>Read-only</b>. Nothing else.</li>
+          <li>Generate it, copy it and paste it here. Revoke it on GitHub any time to sign out everywhere.</li>
+        </ol>
+      </details>
+    </section>
+
+    <!-- Signed in -->
+    <section data-view="list" aria-labelledby="list-title" hidden>
+      <div class="private-head">
+        <div>
+          <p class="label">Signed in</p>
+          <h2 id="list-title">Waiting to be released.</h2>
+        </div>
+        <p class="hint" data-status>Loading…</p>
+      </div>
+      <div class="grid" data-apps></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>© <span id="year">2026</span> The Convenience Suite</span>
+      <span>Pre-release builds: expect rough edges.</span>
+    </div>
+  </footer>
+
+  <template id="app-card">
+    <article class="app">
+      <div class="app-top">
+        <img class="app-icon" alt="" width="60" height="60">
+        <span class="tag"></span>
+      </div>
+      <h3></h3>
+      <p class="desc"></p>
+      <ul class="chips"></ul>
+      <div class="app-bar"></div>
+      <div class="app-foot">
+        <span class="version"></span>
+        <div class="actions"></div>
+      </div>
+      <p class="upcoming-note" hidden></p>
+    </article>
+  </template>
+
+  <script src="private.js?v=1"></script>
+</body>
+</html>

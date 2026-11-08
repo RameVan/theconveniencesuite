@@ -1,0 +1,59 @@
+/* Owner sign-in and pre-release list (private.html). Builds on styles.css. */
+.private-hero { padding-block: 40px 48px; }
+.private-hero h1 { font-size: clamp(36px, 5.4vw, 56px); }
+.private-hero .lede { margin-bottom: 0; }
+button.btn { border: 0; font-family: inherit; cursor: pointer; }
+.btn[disabled] { opacity: 0.55; cursor: progress; }
+
+.private { padding-block: 64px 96px; }
+.private h2 { font-size: clamp(30px, 4vw, 42px); line-height: 1.08; }
+.hint { margin: 10px 0 0; color: var(--text-2); font-size: 14px; }
+
+.signin {
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 30px;
+  border-radius: 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+.signin .label { margin: 0; }
+.signin form { display: flex; flex-direction: column; gap: 10px; }
+.signin label[for] { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-2); }
+.signin input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--dash);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--text);
+  font: 14px ui-monospace, "SF Mono", Consolas, monospace;
+}
+.signin input:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; border-color: var(--ink); }
+.check { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--text-2); }
+.check input { width: 16px; height: 16px; margin: 0; accent-color: var(--ink); }
+.signin .actions { margin-top: 6px; }
+.error { margin: 0; padding: 10px 14px; border-left: 3px solid var(--red); background: color-mix(in srgb, var(--red) 8%, transparent); font-size: 13.5px; }
+
+.private-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 28px;
+}
+.private-head .hint { margin: 0; }
+/* auto-fill, so one or two apps keep card width instead of stretching across the page */
+.private .grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.empty { grid-column: 1 / -1; margin: 0; padding: 18px 24px; border: 1px dashed var(--dash); border-radius: 24px; color: var(--text-2); }
+
+.app .tag.pre { border-style: solid; border-color: var(--app-b); background: var(--app-b); color: var(--ink); }
+
+@media (max-width: 560px) {
+  .private-hero { padding-block: 24px 32px; }
+  .private { padding-block: 40px 64px; }
+  .signin { padding: 22px; }
+}

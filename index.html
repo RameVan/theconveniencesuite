@@ -5,82 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>The Convenience Suite</title>
   <meta name="description" content="Small, private, no-subscription apps you can download and run yourself.">
-  <meta name="theme-color" content="#060907">
+  <meta name="theme-color" content="#0b0b0b">
   <meta property="og:title" content="The Convenience Suite">
   <meta property="og:description" content="Small, private, no-subscription apps you can download and run yourself.">
   <meta property="og:url" content="https://theconveniencesuite.com/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#top" aria-label="The Convenience Suite home">
-      <img src="favicon.svg" alt="" width="30" height="30">
-      <span>The Convenience Suite</span>
-    </a>
-    <nav class="pills" aria-label="Sections">
-      <a class="pill is-on" href="#apps">Apps</a>
-      <a class="pill" href="#about">About</a>
-    </nav>
+  <header class="hero" id="top">
+    <div class="wrap topbar">
+      <a class="brand" href="#top" aria-label="The Convenience Suite home">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="10" height="10" fill="#f6b73c"/><rect x="12" width="10" height="10" fill="#f08a2c"/><rect y="12" width="10" height="10" fill="#e4502b"/><rect x="12" y="12" width="10" height="10" fill="#ffffff"/></svg>
+        <span>The Convenience Suite</span>
+      </a>
+      <nav class="nav" aria-label="Sections">
+        <a href="#apps">Apps</a>
+        <a href="#about">About</a>
+        <a class="btn light" href="#apps">Get the apps</a>
+      </nav>
+    </div>
+
+    <div class="wrap hero-body">
+      <div class="hero-text">
+        <p class="label">Small tools · no fuss</p>
+        <h1>Apps that quietly make life a little easier.</h1>
+        <p class="lede">Everything here is free to download, runs on your own machine and keeps your data with you. No accounts, no subscriptions, no tracking.</p>
+        <div class="hero-actions">
+          <a class="btn light" href="#apps">Browse the apps</a>
+          <a class="btn plain" href="#about">Why it exists</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="case">
+          <svg viewBox="0 0 240 260" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M30 180 120 130 210 180M120 20v110" stroke-dasharray="4 4" opacity=".35"/><path d="M120 20 210 70 120 120 30 70Z"/><path d="M30 70v110l90 50 90-50V70M120 120v110"/><path d="M44 96v54M54 102v30" opacity=".5"/><path d="M30 180 120 230 210 180v18l-90 50-90-50Z" fill="#f4f1ea"/></svg>
+          <img src="assets/turndown.png" alt="">
+        </div>
+      </div>
+    </div>
+    <div class="stripes"></div>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <p class="eyebrow"><span class="dot"></span>Small tools · no fuss</p>
-      <h1>Apps that quietly make<br>life a little easier.</h1>
-      <p class="lede">Everything here is free to download, runs on your own machine and keeps your data with you. No accounts, no subscriptions, no tracking.</p>
-
-      <div class="stats">
-        <div class="stat"><span class="stat-icon" style="--c: var(--accent)">
-          <svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg></span>
-          <div><b data-count-apps>2</b><small>Apps</small></div></div>
-        <div class="stat"><span class="stat-icon" style="--c: var(--amber)">
-          <svg viewBox="0 0 24 24"><path d="M12 3v18M7 7.5c0-1.9 2.2-3 5-3s5 1.1 5 3-2.2 2.6-5 3.2-5 1.4-5 3.3 2.2 3.5 5 3.5 5-1.3 5-3.2"/></svg></span>
-          <div><b>€0</b><small>Free, forever</small></div></div>
-        <div class="stat"><span class="stat-icon" style="--c: var(--teal)">
-          <svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.4 3.4 8.3 8 9 4.6-.7 8-4.6 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></span>
-          <div><b>Private</b><small>Your data stays home</small></div></div>
-        <div class="stat"><span class="stat-icon" style="--c: var(--copper)">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
-          <div><b>Self-run</b><small>On your own device</small></div></div>
-      </div>
-    </section>
-
-    <section id="apps" class="apps-section" aria-labelledby="apps-title">
-      <div class="section-head">
+  <main>
+    <section id="apps" class="wrap apps" aria-labelledby="apps-title">
+      <div class="apps-head">
         <div>
-          <p class="eyebrow">The suite</p>
-          <h2 id="apps-title">Download an app</h2>
+          <p class="label">The suite</p>
+          <h2 id="apps-title">Download an app.</h2>
         </div>
-        <div class="pills" role="group" aria-label="Filter apps">
-          <button class="pill is-on" data-filter="all" aria-pressed="true">All</button>
-          <button class="pill" data-filter="browser" aria-pressed="false">Browser</button>
-          <button class="pill" data-filter="selfhosted" aria-pressed="false">Self-hosted</button>
-        </div>
+        <div class="tile"><span>Apps in the suite</span><b data-count-apps>2</b></div>
+        <div class="tile amber"><span>Price, forever</span><b>€0</b></div>
       </div>
 
-      <!-- One <article> per app. To add an app: copy a card, change --app-accent, the text, icon and download link. -->
+      <!-- One <article> per app. To add an app: copy a card and change the colours (--app-ink, --app-a, --app-b), text, icon and links. -->
       <div class="grid">
 
-        <article class="card app" data-kind="browser" style="--app-accent: var(--copper)">
-          <div class="app-head">
-            <img class="app-icon" src="assets/turndown.png" alt="" width="56" height="56">
-            <div>
-              <span class="tag">Chrome extension</span>
-              <h3>Turndown</h3>
-              <p class="version">v1.1.0 · Chrome, Edge, Brave</p>
-            </div>
+        <article class="app" style="--app-ink: #c2361b; --app-a: #e4502b; --app-b: #b32620">
+          <div class="app-top">
+            <img class="app-icon" src="assets/turndown.png" alt="" width="60" height="60">
+            <span class="tag">Chrome extension</span>
           </div>
+          <h3>Turndown</h3>
           <p class="desc">Turns down cookie banners for you. It recognises the big consent platforms, finds "Reject all" in ten languages, and switches off every vendor and legitimate-interest toggle when a site hides them behind settings.</p>
           <ul class="chips">
-            <li><span class="dot"></span>20+ consent platforms</li>
-            <li><span class="dot"></span>Refuses legitimate interest</li>
-            <li><span class="dot"></span>Per-site on/off</li>
+            <li>20+ consent platforms</li>
+            <li>Refuses legitimate interest</li>
+            <li>Per-site on/off</li>
           </ul>
-          <div class="actions">
-            <a class="btn" href="downloads/turndown-1.1.0.zip" download>
-              <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Download</a>
-            <span class="size" data-size="downloads/turndown-1.1.0.zip"></span>
+          <div class="app-bar"></div>
+          <div class="app-foot">
+            <span class="version">v1.1.0 · Chrome, Edge, Brave<span class="size" data-size="downloads/turndown-1.1.0.zip"></span></span>
+            <div class="actions">
+              <a class="btn" href="downloads/turndown-1.1.0.zip" download>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Download</a>
+            </div>
           </div>
           <details>
             <summary>How to install</summary>
@@ -93,27 +92,27 @@
           </details>
         </article>
 
-        <article class="card app" data-kind="selfhosted" style="--app-accent: var(--accent)">
-          <div class="app-head">
-            <img class="app-icon" src="assets/pantrypip.svg" alt="" width="56" height="56">
-            <div>
-              <span class="tag">Web app · Android · iPhone</span>
-              <h3>PantryPip</h3>
-              <p class="version">v0.1.0 · Phone &amp; desktop · EN / NL</p>
-            </div>
+        <article class="app" style="--app-ink: #2f5d50; --app-a: #2f5d50; --app-b: #f2a541">
+          <div class="app-top">
+            <img class="app-icon" src="assets/pantrypip.svg" alt="" width="60" height="60">
+            <span class="tag">Web app · Android · iPhone</span>
           </div>
+          <h3>PantryPip</h3>
           <p class="desc">A food assistant that keeps your pantry up to date with almost no effort. Snap a receipt, say "I finished the milk", tap "Cooked it". It plans meals, writes the shopping list and learns how fast you use things.</p>
           <ul class="chips">
-            <li><span class="dot"></span>Receipt scanning</li>
-            <li><span class="dot"></span>Smart shopping list</li>
-            <li><span class="dot"></span>Works offline as a PWA</li>
+            <li>Receipt scanning</li>
+            <li>Smart shopping list</li>
+            <li>Works offline as a PWA</li>
           </ul>
-          <div class="actions">
-            <a class="btn" href="https://app.theconveniencesuite.com" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-9 9M18 14v5H5V6h5"/></svg>Try it</a>
-            <a class="btn ghost" href="downloads/pantrypip-0.1.0.apk" download>
-              <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Android app</a>
-            <span class="size" data-size="downloads/pantrypip-0.1.0.apk"></span>
+          <div class="app-bar"></div>
+          <div class="app-foot">
+            <span class="version">v0.1.0 · EN / NL<span class="size" data-size="downloads/pantrypip-0.1.0.apk"></span></span>
+            <div class="actions">
+              <a class="btn" href="https://app.theconveniencesuite.com" target="_blank" rel="noopener">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6m0-6-9 9M18 14v5H5V6h5"/></svg>Try it</a>
+              <a class="btn ghost" href="downloads/pantrypip-0.1.0.apk" download>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Android</a>
+            </div>
           </div>
           <details>
             <summary>Install it on your phone or computer</summary>
@@ -136,55 +135,32 @@
           </details>
         </article>
 
-
-        <article class="card app soon" data-kind="all">
-          <div class="app-head">
-            <span class="app-icon placeholder" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
-            <div>
-              <span class="tag dashed">Coming soon</span>
-              <h3>More on the way</h3>
-            </div>
-          </div>
-          <p class="desc">New tools land here when they are ready. Each one is small, does one thing well and never asks you to sign up.</p>
-        </article>
-
       </div>
+
+      <p class="soon"><b>More on the way.</b> New tools land here when they are ready. Each one is small, does one thing well and never asks you to sign up.</p>
     </section>
 
-    <section id="about" class="card about" aria-labelledby="about-title">
-      <div>
-        <p class="eyebrow">About</p>
-        <h2 id="about-title">Why a convenience suite?</h2>
-        <p>These started as tools I built for myself: to stop clicking through cookie walls, and to stop forgetting what's in the cupboard. They worked well enough that I wanted to share them.</p>
-      </div>
+    <section id="about" class="wrap about" aria-labelledby="about-title">
+      <h2 id="about-title">Built for myself first. Shared because they work.</h2>
+      <p class="about-intro">These started as tools I built for myself: to stop clicking through cookie walls and to stop forgetting what's in the cupboard. They worked well enough that I wanted to share them.</p>
       <ul class="promises">
-        <li><span class="dot" style="--c: var(--accent)"></span><div><b>No accounts</b><small>Download and go. Nothing to sign up for.</small></div></li>
-        <li><span class="dot" style="--c: var(--teal)"></span><div><b>Your data stays yours</b><small>Apps run on your device or your own server.</small></div></li>
-        <li><span class="dot" style="--c: var(--amber)"></span><div><b>Free</b><small>No tiers, no paywalls, no "pro" version.</small></div></li>
+        <li><b>No accounts</b><span>Download and go. Nothing to sign up for.</span></li>
+        <li><b>Your data stays yours</b><span>Apps run on your device or your own server.</span></li>
+        <li><b>Free</b><span>No tiers, no paywalls, no "pro" version.</span></li>
       </ul>
     </section>
   </main>
 
   <footer class="footer">
-    <span>© <span id="year">2026</span> The Convenience Suite</span>
-    <span>Apps are provided as-is, without warranty.</span>
+    <div class="wrap">
+      <span>© <span id="year">2026</span> The Convenience Suite</span>
+      <span>Apps are provided as-is, without warranty.</span>
+    </div>
   </footer>
 
   <script>
-    // Filter pills
-    const filterPills = document.querySelectorAll('[data-filter]');
-    filterPills.forEach(pill => pill.addEventListener('click', () => {
-      const f = pill.dataset.filter;
-      filterPills.forEach(p => { p.classList.toggle('is-on', p === pill); p.setAttribute('aria-pressed', p === pill); });
-      document.querySelectorAll('.app').forEach(card => {
-        const kind = card.dataset.kind;
-        card.hidden = !(f === 'all' || kind === f || kind === 'all');
-      });
-    }));
-
     // App count and download sizes (sizes only appear when the site is served over http/https)
-    document.querySelector('[data-count-apps]').textContent = document.querySelectorAll('.app:not(.soon)').length;
+    document.querySelector('[data-count-apps]').textContent = document.querySelectorAll('.app').length;
     document.getElementById('year').textContent = new Date().getFullYear();
     document.querySelectorAll('[data-size]').forEach(async el => {
       try {

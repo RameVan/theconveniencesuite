@@ -245,6 +245,23 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 .size:not(:empty)::before { content: " · "; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* An app that's announced but not downloadable yet */
+.app.upcoming { background: none; border-style: dashed; border-color: var(--dash); }
+.app.upcoming:hover { transform: none; }
+.app.upcoming .tag { border-style: solid; border-color: var(--app-b); background: var(--app-b); color: var(--ink); }
+.app.upcoming .app-bar { background: repeating-linear-gradient(-45deg, var(--app-a) 0 8px, var(--app-b) 8px 16px); opacity: 0.55; }
+.pending {
+  padding: 10px 14px;
+  border-radius: 4px;
+  border: 1px dashed var(--dash);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.upcoming-note { margin: 0; padding-top: 12px; border-top: 1px dashed var(--dash); font-size: 13.5px; color: var(--text-2); }
+
 details { border-top: 1px dashed var(--dash); padding-top: 12px; }
 summary {
   cursor: pointer;

@@ -43,16 +43,24 @@ $oo = Join-Path $root 'Unsubscriber'
 $ooVersion = (Get-Content (Join-Path $oo 'extension\manifest.json') -Raw | ConvertFrom-Json).version
 Compress-Archive -Path (Join-Path $oo 'extension\*') -DestinationPath (Join-Path $builds "optout-extension-$ooVersion.zip") -Force
 $ooSource = Save-Source $oo 'optout' $ooVersion
+# Add the double-click starter (private-extras\optout) next to the source, so no terminal is needed
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$zip = [IO.Compression.ZipFile]::Open((Join-Path $Clone $ooSource), 'Update')
+try {
+  Get-ChildItem (Join-Path $site 'private-extras\optout') -File | ForEach-Object {
+    [IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, "optout/$($_.Name)") | Out-Null
+  }
+} finally { $zip.Dispose() }
 Copy-Item (Join-Path $oo 'extension\icons\icon.svg') (Join-Path $icons 'optout.svg') -Force
 $apps += [ordered]@{
   name = 'Opt Out'; tag = "Web app $dot Chrome extension"; version = $ooVersion; icon = 'icons/optout.svg'
   colors = [ordered]@{ ink = '#b4541c'; a = '#f08a2c'; b = '#f6b73c' }
   desc = 'Clears the newsletters out of your Gmail: finds every mailing list, sorts them and unsubscribes in bulk while keeping important mail safe.'
   chips = @('Bulk unsubscribe', 'Protects important mail', 'Breach alerts')
-  note = 'Not tried on a real mailbox yet. Run the web app (npm install, npm run dev) and load the extension unpacked.'
+  note = 'To try it: unzip Web app and double-click "Start Opt Out" (needs Node.js 24 from nodejs.org). It opens in your browser (the first start takes a few minutes); choose "Use development fixture mailbox" to try it on test data. Not tried on a real mailbox yet.'
   files = @(
-    [ordered]@{ label = 'Extension'; path = "builds/optout-extension-$ooVersion.zip" },
-    [ordered]@{ label = 'Source'; path = $ooSource }
+    [ordered]@{ label = 'Web app'; path = $ooSource },
+    [ordered]@{ label = 'Extension'; path = "builds/optout-extension-$ooVersion.zip" }
   )
 }
 

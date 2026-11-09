@@ -2,9 +2,11 @@
 # Nothing here is written to this public site folder: unreleased builds must never be committed to it.
 # Run:  powershell -File build-private.ps1          (build and commit in the private clone)
 #       powershell -File build-private.ps1 -Push    (also push, which makes them downloadable)
+#       -OptOutExe path\to\OptOut-x.y.z.exe            (the portable Windows app; default: newest in Unsubscriber\desktop\release)
 # When an app goes public, remove it from $apps below, add it to build-downloads.ps1 and index.html.
 param(
   [string]$Clone = (Join-Path $env:LOCALAPPDATA 'ConvenienceSuite\private'),
+  [string]$OptOutExe,
   [switch]$Push
 )
 $ErrorActionPreference = 'Stop'
@@ -52,16 +54,31 @@ try {
   }
 } finally { $zip.Dispose() }
 Copy-Item (Join-Path $oo 'extension\icons\icon.svg') (Join-Path $icons 'optout.svg') -Force
+# The portable Windows app is over GitHub's 100 MB file limit, so it goes up as a release asset of the
+# private repo (on -Push) and the Worker serves it from releases/<tag>/<name>.
+$ooFiles = @(
+  [ordered]@{ label = 'Web app'; path = $ooSource },
+  [ordered]@{ label = 'Extension'; path = "builds/optout-extension-$ooVersion.zip" }
+)
+$ooNote = 'To try it: unzip Web app and double-click "Start Opt Out" (needs Node.js 24 from nodejs.org). It opens in your browser (the first start takes a few minutes); choose "Use development fixture mailbox" to try it on test data. Not tried on a real mailbox yet.'
+if (-not $OptOutExe) {
+  $OptOutExe = Get-ChildItem (Join-Path $oo 'desktop\release\OptOut-*.exe') -ErrorAction SilentlyContinue | Sort-Object LastWriteTime | Select-Object -Last 1 -ExpandProperty FullName
+}
+$exeRelease = $null
+if ($OptOutExe) {
+  $exeName = Split-Path $OptOutExe -Leaf
+  $exeVersion = $exeName -replace '^OptOut-(.+)\.exe$', '$1'
+  $exeRelease = @{ tag = "optout-desktop-$exeVersion"; file = $OptOutExe; version = $exeVersion }
+  $ooFiles = @([ordered]@{ label = "Windows app $exeVersion"; path = "releases/optout-desktop-$exeVersion/$exeName" }) + $ooFiles
+  $ooNote = 'Windows app: download and double-click, nothing is installed (Windows may warn "Windows protected your PC": choose More info, then Run anyway). It opens in your browser; unsubscribes in it are real. ' + $ooNote
+}
 $apps += [ordered]@{
-  name = 'Opt Out'; tag = "Web app $dot Chrome extension"; version = $ooVersion; icon = 'icons/optout.svg'
+  name = 'Opt Out'; tag = "Windows app $dot Web app $dot Chrome extension"; version = $ooVersion; icon = 'icons/optout.svg'
   colors = [ordered]@{ ink = '#b4541c'; a = '#f08a2c'; b = '#f6b73c' }
   desc = 'Clears the newsletters out of your Gmail: finds every mailing list, sorts them and unsubscribes in bulk while keeping important mail safe.'
   chips = @('Bulk unsubscribe', 'Protects important mail', 'Breach alerts')
-  note = 'To try it: unzip Web app and double-click "Start Opt Out" (needs Node.js 24 from nodejs.org). It opens in your browser (the first start takes a few minutes); choose "Use development fixture mailbox" to try it on test data. Not tried on a real mailbox yet.'
-  files = @(
-    [ordered]@{ label = 'Web app'; path = $ooSource },
-    [ordered]@{ label = 'Extension'; path = "builds/optout-extension-$ooVersion.zip" }
-  )
+  note = $ooNote
+  files = $ooFiles
 }
 
 $json = [ordered]@{ apps = $apps } | ConvertTo-Json -Depth 6
@@ -71,10 +88,25 @@ if (-not (Test-Path (Join-Path $Clone 'README.md'))) {
 }
 
 Get-ChildItem $builds | Select-Object Name, @{ n = 'KB'; e = { [math]::Ceiling($_.Length / 1KB) } }
+
+# Upload release assets first, so the links in apps.json work as soon as it is pushed
+if ($Push -and $exeRelease) {
+  $repo = 'RameVan/convenience-suite-private'
+  # Read the list from stdout: Windows PowerShell turns a native command's stderr into a fatal error here
+  $tags = @(gh release list -R $repo --json tagName --jq '.[].tagName')
+  if ($tags -notcontains $exeRelease.tag) {
+    gh release create $exeRelease.tag $exeRelease.file -R $repo --title "Opt Out for Windows $($exeRelease.version)" --notes 'Portable Windows app. Pre-release; served by the private download page.'
+  } else {
+    gh release upload $exeRelease.tag $exeRelease.file -R $repo --clobber
+  }
+  if ($LASTEXITCODE) { throw 'Uploading the Windows app to the private repo failed' }
+}
 git -C $Clone add -A
 git -C $Clone diff --cached --quiet
 if ($LASTEXITCODE) {
   git -C $Clone commit -q -m "Update pre-release builds"
   if ($LASTEXITCODE) { throw "git commit failed in $Clone" }
-  if ($Push) { git -C $Clone push -u origin HEAD } else { Write-Host "Committed in $Clone. Run again with -Push (or git push there) to publish to the private repo." }
+  if (-not $Push) { Write-Host "Committed in $Clone. Run again with -Push (or git push there) to publish to the private repo." }
 } else { Write-Host 'No changes.' }
+# Push also when an earlier run already committed without -Push
+if ($Push) { git -C $Clone push -u origin HEAD }

@@ -57,7 +57,7 @@ function cors(request, env) {
 const json = (body, status = 200, headers = {}) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...headers } });
 
-const TYPES = { zip: 'application/zip', apk: 'application/vnd.android.package-archive', svg: 'image/svg+xml', png: 'image/png', webp: 'image/webp', json: 'application/json' };
+const TYPES = { exe: 'application/vnd.microsoft.portable-executable', zip: 'application/zip', apk: 'application/vnd.android.package-archive', svg: 'image/svg+xml', png: 'image/png', webp: 'image/webp', json: 'application/json' };
 
 async function fromGitHub(env, path) {
   const url = `https://api.github.com/repos/${env.REPO}/contents/${path.split('/').map(encodeURIComponent).join('/')}`;
@@ -69,6 +69,24 @@ async function fromGitHub(env, path) {
       'X-GitHub-Api-Version': '2022-11-28',
     },
   });
+}
+
+// Files over GitHub's 100 MB file limit (the Windows app) are release assets of the private repo
+// instead of repo files: releases/<tag>/<asset name>.
+async function fromRelease(env, path) {
+  const [, tag, name] = path.split('/');
+  const gh = (url, accept) => fetch(url, {
+    headers: { Accept: accept, Authorization: `Bearer ${env.GITHUB_TOKEN}`, 'User-Agent': 'theconveniencesuite-dl', 'X-GitHub-Api-Version': '2022-11-28' },
+    redirect: 'manual',
+  });
+  const rel = await gh(`https://api.github.com/repos/${env.REPO}/releases/tags/${encodeURIComponent(tag)}`, 'application/vnd.github+json');
+  if (!rel.ok) return rel;
+  const asset = (await rel.json()).assets?.find(a => a.name === name);
+  if (!asset) return new Response(null, { status: 404 });
+  const res = await gh(asset.url, 'application/octet-stream');
+  // GitHub answers with a redirect to signed storage; fetch that without our token.
+  const location = res.headers.get('Location');
+  return location && res.status >= 300 && res.status < 400 ? fetch(location) : res;
 }
 
 async function login(request, env, headers) {
@@ -108,9 +126,9 @@ export default {
 
     // /apps is the private repo's apps.json; /file/<path> is one of its builds or icons
     const path = url.pathname === '/apps' ? 'apps.json' : url.pathname.startsWith('/file/') ? decodeURIComponent(url.pathname.slice(6)) : null;
-    if (!path || (path !== 'apps.json' && !/^(builds|icons)\/[\w.-]+$/.test(path))) return json({ error: 'Not found.' }, 404, headers);
+    if (!path || (path !== 'apps.json' && !/^(builds|icons)\/[\w.-]+$/.test(path) && !/^releases\/[\w.-]+\/[\w.-]+$/.test(path))) return json({ error: 'Not found.' }, 404, headers);
 
-    const res = await fromGitHub(env, path);
+    const res = path.startsWith('releases/') ? await fromRelease(env, path) : await fromGitHub(env, path);
     if (res.status === 404) return json({ error: `${path} isn't in the private repo.` }, 404, headers);
     if (!res.ok) return json({ error: `GitHub answered ${res.status}. Check the Worker's GITHUB_TOKEN.` }, 502, headers);
     const name = path.split('/').pop();
@@ -121,7 +139,7 @@ export default {
         'Cache-Control': 'private, no-store',
         'X-Content-Type-Options': 'nosniff',
         'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; sandbox",
-        ...(path.startsWith('builds/') && { 'Content-Disposition': `attachment; filename="${name}"` }),
+        ...(!path.startsWith('icons/') && path !== 'apps.json' && { 'Content-Disposition': `attachment; filename="${name}"` }),
         ...(res.headers.get('Content-Length') && { 'Content-Length': res.headers.get('Content-Length') }),
       },
     });

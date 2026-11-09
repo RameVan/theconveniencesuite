@@ -359,6 +359,19 @@ details b { color: var(--text); }
 }
 .soon b { font-family: var(--serif); font-weight: 400; font-size: 22px; color: var(--text); }
 
+/* --- Hardware ----------------------------------------------------------- */
+.hardware { padding-block: 64px 8px; scroll-margin-top: 16px; }
+.hardware .apps-head { margin-bottom: 12px; }
+.hardware-intro { max-width: 620px; margin: 0 0 28px; color: var(--text-2); }
+.app.hw { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.hw-art { display: block; width: 100%; height: auto; border-radius: 18px; }
+.hw-body { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.app.hw .tag { white-space: normal; }
+.specs { display: grid; gap: 10px; margin: 0; padding: 14px 0 0; border-top: 1px dashed var(--dash); list-style: none; font-size: 13.5px; }
+.specs li { display: grid; grid-template-columns: 96px 1fr; gap: 12px; }
+.specs b { font-weight: 600; }
+.specs span { color: var(--text-2); }
+
 /* --- About -------------------------------------------------------------- */
 .about { padding-block: 72px 96px; scroll-margin-top: 16px; }
 .about h2 { max-width: 640px; margin: 0 auto 14px; text-align: center; font-size: clamp(28px, 3.6vw, 38px); line-height: 1.15; }
@@ -382,11 +395,16 @@ details b { color: var(--text); }
 .footer a { color: inherit; }
 .footer a:hover { color: var(--text-2); }
 
+@media (max-width: 860px) {
+  .app.hw { grid-template-columns: 1fr; gap: 22px; }
+}
+
 /* --- Small screens ------------------------------------------------------ */
 @media (max-width: 560px) {
   .wrap { padding-inline: 16px; }
   .hero-body { padding-block: 32px 40px; gap: 32px; }
   .nav { gap: 16px; }
+  .nav .nav-tip-text { display: none; } /* the cup icon alone, so Hardware fits and Sign in stays on this row */
   .nav .btn.light { display: none; } /* the hero's "Browse the apps" does the same; keeps Sign in on this row */
   .case { width: 200px; }
   .stripes { height: 48px; }
@@ -395,6 +413,8 @@ details b { color: var(--text); }
   .tile b { font-size: 48px; }
   .app { padding: 22px; }
   .app h3 { font-size: 32px; }
+  .hardware { padding-top: 40px; }
+  .specs li { grid-template-columns: 1fr; gap: 2px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

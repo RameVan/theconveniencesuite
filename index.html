@@ -230,7 +230,10 @@
       const api = location.hostname === 'localhost' ? 'http://localhost:8788' : 'https://dl.theconveniencesuite.com';
       fetch(`${api}/me`, { credentials: 'include' })
         .then(res => res.ok ? res.json() : Promise.reject(res.status))
-        .then(({ user }) => showAccount(user))
+        .then(({ user }) => {
+          showAccount(user);
+          try { localStorage.setItem('suiteUser', user); } catch { /* storage blocked */ }
+        })
         .catch(status => {
           if (status !== 401) return; // offline or server down: keep the hint
           showAccount(null);

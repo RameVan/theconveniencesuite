@@ -26,7 +26,8 @@ async function ask(question, hidden) {
   return answer.trim();
 }
 
-const user = (await ask('Username: ')).toLowerCase();
+// Shown as typed (e.g. "Rame"); signing in ignores upper/lower case
+const user = await ask('Username: ');
 const password = await ask('Password (12+ characters): ', true);
 const again = await ask('Password again: ', true);
 rl.close();

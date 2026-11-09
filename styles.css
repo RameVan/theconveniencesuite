@@ -100,6 +100,8 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 .btn.ghost { background: none; color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 .btn.light { background: var(--hero-text); color: var(--ink); }
 .btn.plain { background: none; color: var(--hero-text); padding-inline: 4px; }
+.btn.line { background: none; color: var(--hero-text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hero-text) 55%, transparent); }
+.btn.line:hover { box-shadow: inset 0 0 0 1px var(--hero-text), 0 0 0 4px color-mix(in srgb, var(--orange) 30%, transparent); }
 
 /* --- Hero (black) ------------------------------------------------------- */
 .hero { background: var(--ink); color: var(--hero-text); }
@@ -384,6 +386,7 @@ details b { color: var(--text); }
   .wrap { padding-inline: 16px; }
   .hero-body { padding-block: 32px 40px; gap: 32px; }
   .nav { gap: 16px; }
+  .nav .btn.light { display: none; } /* the hero's "Browse the apps" does the same; keeps Sign in on this row */
   .case { width: 200px; }
   .stripes { height: 48px; }
   .apps { padding-top: 56px; }

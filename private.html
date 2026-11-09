@@ -11,8 +11,8 @@
   <meta name="theme-color" content="#0b0b0b">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=10">
-  <link rel="stylesheet" href="private.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="private.css?v=3">
 </head>
 <body>
   <header class="hero" id="top">
@@ -23,6 +23,8 @@
       </a>
       <nav class="nav" aria-label="Sections">
         <a href="./">Public apps</a>
+        <span class="nav-user" data-user hidden>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0"/></svg><span class="visually-hidden">Signed in as </span><b data-user-name></b></span>
         <button class="btn light" type="button" data-signout hidden>Sign out</button>
       </nav>
     </div>
@@ -94,6 +96,6 @@
     </article>
   </template>
 
-  <script src="private.js?v=2"></script>
+  <script src="private.js?v=3"></script>
 </body>
 </html>

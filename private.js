@@ -16,6 +16,9 @@ const views = { signin: $('[data-view="signin"]'), list: $('[data-view="list"]')
 const form = $('[data-signin]');
 const errorBox = $('[data-error]');
 const signout = $('[data-signout]');
+const userChip = $('[data-user]');
+const userName = $('[data-user-name]');
+const USER_HINT = 'suiteUser'; // read by index.html to show the username instead of "Sign in"
 const status = $('[data-status]');
 const grid = $('[data-apps]');
 
@@ -102,7 +105,18 @@ async function load() {
   }
 }
 
+// Shows who is signed in, top right here and (via the localStorage hint) on the main page
+function setUser(user) {
+  userChip.hidden = !user;
+  userName.textContent = user || '';
+  try { user ? localStorage.setItem(USER_HINT, user) : localStorage.removeItem(USER_HINT); } catch { /* storage blocked */ }
+}
+
+// Session cookie still valid? Then show the list, otherwise the form.
+const start = () => api('/me').then(({ user }) => { setUser(user); load(); }, () => showSignIn());
+
 function showSignIn(message) {
+  setUser(null);
   grid.replaceChildren();
   errorBox.hidden = true;
   if (message) fail(message);
@@ -124,7 +138,7 @@ form.addEventListener('submit', async e => {
       body: JSON.stringify({ username, password, remember: form.remember.checked }),
     });
     form.reset();
-    load();
+    start();
   } catch (err) {
     form.password.value = '';
     fail(err.message);
@@ -140,5 +154,4 @@ signout.addEventListener('click', async () => {
 });
 
 $('#year').textContent = new Date().getFullYear();
-// Already signed in (session cookie still valid)? Go straight to the list.
-api('/me').then(load, () => show('signin'));
+start();

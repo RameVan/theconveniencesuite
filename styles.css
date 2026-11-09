@@ -101,6 +101,7 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 .btn.light { background: var(--hero-text); color: var(--ink); }
 .btn.plain { background: none; color: var(--hero-text); padding-inline: 4px; }
 .btn.line { background: none; color: var(--hero-text); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hero-text) 55%, transparent); }
+.btn.user { text-transform: none; letter-spacing: 0; font-size: 13px; }
 .btn.line:hover { box-shadow: inset 0 0 0 1px var(--hero-text), 0 0 0 4px color-mix(in srgb, var(--orange) 30%, transparent); }
 
 /* --- Hero (black) ------------------------------------------------------- */

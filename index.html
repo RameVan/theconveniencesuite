@@ -11,7 +11,7 @@
   <meta property="og:url" content="https://theconveniencesuite.com/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
   <header class="hero" id="top">
@@ -25,8 +25,8 @@
         <a href="#about">About</a>
         <a class="nav-tip" href="https://ko-fi.com/ramevanlife" target="_blank" rel="noopener"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h11v4a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5v-4Zm11 1h1.5a2.5 2.5 0 0 1 0 5H16M9 4v3m3-3v3"/></svg>Buy me a coffee</a>
         <a class="btn light" href="#apps">Get the apps</a>
-        <a class="btn line" href="private.html" rel="nofollow">
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0"/></svg>Sign in</a>
+        <a class="btn line" href="private.html" rel="nofollow" data-account>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0"/></svg><span data-account-name>Sign in</span></a>
       </nav>
     </div>
 
@@ -215,6 +215,29 @@
   </dialog>
 
   <script>
+    // Signed in? private.js leaves the username in localStorage, so other visitors make no request.
+    // Show it at once, then ask the login server whether the session is still valid.
+    const account = document.querySelector('[data-account]');
+    const showAccount = user => {
+      account.classList.toggle('user', Boolean(user));
+      account.querySelector('[data-account-name]').textContent = user || 'Sign in';
+      account.title = user ? `Signed in as ${user}` : '';
+    };
+    let hint = null;
+    try { hint = localStorage.getItem('suiteUser'); } catch { /* storage blocked */ }
+    if (hint) {
+      showAccount(hint);
+      const api = location.hostname === 'localhost' ? 'http://localhost:8788' : 'https://dl.theconveniencesuite.com';
+      fetch(`${api}/me`, { credentials: 'include' })
+        .then(res => res.ok ? res.json() : Promise.reject(res.status))
+        .then(({ user }) => showAccount(user))
+        .catch(status => {
+          if (status !== 401) return; // offline or server down: keep the hint
+          showAccount(null);
+          try { localStorage.removeItem('suiteUser'); } catch { /* storage blocked */ }
+        });
+    }
+
     // Ko-fi nudge after a download: once per visit, closes on Esc, the × or a click outside.
     const thanks = document.getElementById('thanks');
     document.querySelectorAll('a[download]').forEach(link => link.addEventListener('click', () => {

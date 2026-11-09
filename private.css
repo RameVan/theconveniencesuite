@@ -2,6 +2,10 @@
 .private-hero { padding-block: 40px 48px; }
 .private-hero h1 { font-size: clamp(36px, 5.4vw, 56px); }
 .private-hero .lede { margin-bottom: 0; }
+.nav-user { display: inline-flex; align-items: center; gap: 6px; color: var(--hero-text); }
+.nav-user .icon { font-size: 15px; color: var(--yellow); }
+.nav-user b { font-weight: 600; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 button.btn { border: 0; font-family: inherit; cursor: pointer; }
 .btn[disabled] { opacity: 0.55; cursor: progress; }
 

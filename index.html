@@ -11,7 +11,7 @@
   <meta property="og:url" content="https://theconveniencesuite.com/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=13">
 </head>
 <body>
   <header class="hero" id="top">
@@ -195,38 +195,98 @@
       </div>
       <p class="hardware-intro">Not everything here is software. These are electronics I'm designing for my own camper van, shown while they're being built. They're prototypes, not products: nothing is for sale.</p>
 
-      <article class="app upcoming hw" style="--app-ink: #b32620; --app-a: #e4502b; --app-b: #f6b73c">
-        <img class="hw-art" src="assets/sdu15.svg" alt="Illustration of the TwelveVolt board: two rows of blade fuses, a measuring chip and LED under each, a controller module and a row of screw terminals" width="640" height="400">
-        <div class="hw-body">
-          <div class="app-top">
-            <span class="tag">In development · Rev A prototype</span>
-          </div>
-          <h3>TwelveVolt</h3>
-          <p class="desc">A smart fuse board: a compact 12 V fuse box for a camper van that you wire like an ordinary blade-fuse box. The difference: every channel measures its own current, voltage, power and energy, and can be switched on and off from Home Assistant.</p>
-          <ul class="chips">
-            <li>16 channels</li>
-            <li>±1 % measurement per channel</li>
-            <li>ESPHome · Home Assistant</li>
-            <li>3D-printed enclosure</li>
-          </ul>
-          <ul class="specs">
-            <li><b>Channels</b><span>15 identical channels on the board, each taking an ATO blade fuse up to 30 A. Channel 1 is a separate high-current channel for one device up to 80 A.</span></li>
-            <li><b>Measuring</b><span>Each channel has its own shunt and measuring chip, designed for ±1 % current and voltage readings.</span></li>
-            <li><b>Switching</b><span>A smart high-side switch per channel with short-circuit and over-temperature shut-off. A jumper sets whether a channel starts on or off.</span></li>
-            <li><b>Control</b><span>An ESP32-S3 on the board runs ESPHome, so Home Assistant sees and switches every channel directly.</span></li>
-            <li><b>Enclosure</b><span>Printed in ASA, about 296 × 212 × 53 mm.</span></li>
-          </ul>
-          <div class="app-bar"></div>
-          <div class="app-foot">
-            <span class="version">Rev A · board SDU-15 · not yet built</span>
-            <div class="actions">
-              <a class="btn ghost" href="mailto:rame@theconveniencesuite.com?subject=TwelveVolt">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4Zm0 0 8 7 8-7"/></svg>Follow progress</a>
-            </div>
-          </div>
-          <p class="upcoming-note">Rev A exists only as a design and calculations. No board has been built, powered or tested yet, so none of the figures above have been measured. It will stay a prototype until a unit has been built and tested in the van.</p>
+      <!-- Two designs behind CSS-only tabs: the radios pick the panel, so it works without JavaScript. -->
+      <div class="hw-tabs">
+        <input class="hw-radio" type="radio" name="hw-design" id="hw-tab-single" checked>
+        <input class="hw-radio" type="radio" name="hw-design" id="hw-tab-modular">
+        <div class="hw-tablist">
+          <label for="hw-tab-single">TwelveVolt</label>
+          <label for="hw-tab-modular">TwelveVolt Modular</label>
         </div>
-      </article>
+
+        <div class="hw-panel" id="hw-panel-single">
+
+          <article class="app upcoming hw" style="--app-ink: #b32620; --app-a: #e4502b; --app-b: #f6b73c">
+            <img class="hw-art" src="assets/sdu15.svg" alt="Illustration of the TwelveVolt board: two rows of blade fuses, a measuring chip and LED under each, a controller module and a row of screw terminals" width="640" height="400">
+            <div class="hw-body">
+              <div class="app-top">
+                <span class="tag">In development · Rev A prototype</span>
+              </div>
+              <h3>TwelveVolt</h3>
+              <p class="desc">A smart fuse board: a compact 12 V fuse box for a camper van that you wire like an ordinary blade-fuse box. The difference: every channel measures its own current, voltage, power and energy, and can be switched on and off from Home Assistant.</p>
+              <ul class="chips">
+                <li>16 channels</li>
+                <li>±1 % measurement per channel</li>
+                <li>ESPHome · Home Assistant</li>
+                <li>3D-printed enclosure</li>
+              </ul>
+              <ul class="specs">
+                <li><b>Channels</b><span>15 identical channels on the board, each taking an ATO blade fuse up to 30 A. Channel 1 is a separate high-current channel for one device up to 80 A.</span></li>
+                <li><b>Measuring</b><span>Each channel has its own shunt and measuring chip, designed for ±1 % current and voltage readings.</span></li>
+                <li><b>Switching</b><span>A smart high-side switch per channel with short-circuit and over-temperature shut-off. A jumper sets whether a channel starts on or off.</span></li>
+                <li><b>Control</b><span>An ESP32-S3 on the board runs ESPHome, so Home Assistant sees and switches every channel directly.</span></li>
+                <li><b>Enclosure</b><span>Printed in ASA, about 296 × 212 × 53 mm.</span></li>
+              </ul>
+              <div class="app-bar"></div>
+              <div class="app-foot">
+                <span class="version">Rev A · board SDU-15 · not yet built</span>
+                <div class="actions">
+                  <a class="btn ghost" href="mailto:rame@theconveniencesuite.com?subject=TwelveVolt">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4Zm0 0 8 7 8-7"/></svg>Follow progress</a>
+                </div>
+              </div>
+              <p class="upcoming-note">Rev A exists only as a design and calculations. No board has been built, powered or tested yet, so none of the figures above have been measured. It will stay a prototype until a unit has been built and tested in the van.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="hw-panel" id="hw-panel-modular">
+          <article class="app upcoming hw parked" style="--app-ink: #6b675f; --app-a: #bfb6a6; --app-b: #e3ded5">
+            <img class="hw-art" src="assets/sdu16-modular.svg" alt="Illustration of TwelveVolt Modular: two distribution boards with blade fuses, a controller board and a high-current module with large fuses, joined by cables" width="640" height="400">
+            <div class="hw-body">
+              <div class="app-top">
+                <span class="tag">Parked design · not built</span>
+              </div>
+              <h3>TwelveVolt Modular</h3>
+              <p class="desc">The first layout of the smart fuse board, split into separate modules: two distribution boards, a controller and a high-current module, each in its own printed enclosure. It was replaced by the single-board TwelveVolt and is kept for reference only.</p>
+              <ul class="chips">
+                <li>16 channels + 1 spare slot</li>
+                <li>Measuring chip per channel</li>
+                <li>KC868-A16 + ESPHome</li>
+                <li>Four printed modules</li>
+              </ul>
+              <div class="app-bar"></div>
+              <div class="app-foot">
+                <span class="version">Rev A design · SDU-16</span>
+                <span class="pending">Parked · not being built</span>
+              </div>
+              <p class="upcoming-note">This design exists only as drawings and calculations. No module has been built, powered or tested. Most of its channel circuit lives on in TwelveVolt.</p>
+            </div>
+          </article>
+
+          <h4 class="modules-title">The modules</h4>
+          <ul class="modules">
+            <li class="module">
+              <span class="module-count">× 2</span>
+              <b>Distribution board</b>
+              <span class="module-part">SDU-DB</span>
+              <p>Eight identical slots, each with an ATO blade fuse up to 30 A, a 1 mΩ shunt with an INA228 measuring chip and a smart high-side switch. Two boards give channels 2–16 plus one spare slot, each board fed by its own 80 A MEGA fuse.</p>
+            </li>
+            <li class="module">
+              <span class="module-count">× 1</span>
+              <b>Controller</b>
+              <span class="module-part">SDU-CTL</span>
+              <p>An ESP32-S3 running ESPHome reads every channel and reports to Home Assistant. In this design an existing KC868-A16 turns loads on; the controller can only hold a channel off, so if it fails every channel just follows the KC868.</p>
+            </li>
+            <li class="module">
+              <span class="module-count">× 1</span>
+              <b>High-current module</b>
+              <span class="module-part">HCM · with SDU-ACS</span>
+              <p>A Victron MEGA fuse bus that feeds both distribution boards, plus channel 1 for one device up to 80 A: a busbar shunt with the small SDU-ACS sense board, then a Victron Smart BatteryProtect 100 A. That current never runs over a circuit board.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <section id="about" class="wrap about" aria-labelledby="about-title">

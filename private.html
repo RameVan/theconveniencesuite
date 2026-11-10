@@ -11,8 +11,8 @@
   <meta name="theme-color" content="#0b0b0b">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=11">
-  <link rel="stylesheet" href="private.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="private.css?v=6">
 </head>
 <body>
   <header class="hero" id="top">
@@ -60,14 +60,18 @@
 
     <!-- Signed in -->
     <section data-view="list" aria-labelledby="list-title" hidden>
-      <div class="private-head">
+      <!-- Same head, grid and closing note as the Apps section on index.html -->
+      <div class="apps-head">
         <div>
           <p class="label">Signed in</p>
           <h2 id="list-title">Waiting to be released.</h2>
         </div>
-        <p class="hint" data-status>Loading…</p>
+        <div class="tile"><span>Unreleased apps</span><b data-count>–</b></div>
+        <div class="tile amber"><span>Status</span><b class="tile-word">Testing</b></div>
       </div>
+      <p class="hint list-status" data-status>Loading…</p>
       <div class="grid" data-apps></div>
+      <p class="soon"><b>Not public yet.</b> When a build is ready it moves to the <a href="./#apps">main page</a> for everyone.</p>
 
       <!-- Owner tools served by the Worker after sign-in (see worker/src/roster.js) -->
       <section class="tools" aria-labelledby="tools-title">
@@ -154,6 +158,6 @@
     </div>
   </template>
 
-  <script src="private.js?v=5"></script>
+  <script src="private.js?v=6"></script>
 </body>
 </html>

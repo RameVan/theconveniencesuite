@@ -21,6 +21,7 @@ const userName = $('[data-user-name]');
 const USER_HINT = 'suiteUser'; // read by index.html to show the username instead of "Sign in"
 const status = $('[data-status]');
 const grid = $('[data-apps]');
+const count = $('[data-count]');
 
 // The earlier version of this page kept a GitHub token in the browser; drop it
 try { localStorage.removeItem('suitePrivateToken'); sessionStorage.removeItem('suitePrivateToken'); } catch { /* storage blocked */ }
@@ -157,14 +158,16 @@ accessAdd.addEventListener('submit', e => {
 async function load() {
   show('list');
   loadAccess();
-  status.textContent = 'Loading…';
+  Object.assign(status, { textContent: 'Loading…', hidden: false });
+  count.textContent = '–';
   grid.replaceChildren();
   try {
     const list = await api('/apps');
     const apps = Array.isArray(list.apps) ? list.apps : [];
     grid.append(...apps.map(card));
     if (!apps.length) grid.append(Object.assign(document.createElement('p'), { className: 'empty', textContent: 'Nothing waiting right now. Everything is public.' }));
-    status.textContent = `${apps.length} unreleased ${apps.length === 1 ? 'app' : 'apps'}`;
+    count.textContent = apps.length; // the tile shows the count, so the status line is only for loading and errors
+    status.hidden = true;
   } catch (err) {
     if (err instanceof SignedOut) return showSignIn();
     status.textContent = err.message;

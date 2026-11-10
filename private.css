@@ -9,8 +9,13 @@
 button.btn { border: 0; font-family: inherit; cursor: pointer; }
 .btn[disabled] { opacity: 0.55; cursor: progress; }
 
-.private { padding-block: 64px 96px; }
+.private { padding-block: 88px 96px; }
 .private h2 { font-size: clamp(30px, 4vw, 42px); line-height: 1.08; }
+.private .apps-head h2 { font-size: clamp(34px, 4.6vw, 48px); line-height: 1.05; }
+.tile b.tile-word { font-size: 40px; }
+.list-status { margin: 0 0 18px; }
+.list-status[hidden] { display: none; }
+.soon a { color: var(--text); }
 .hint { margin: 10px 0 0; color: var(--text-2); font-size: 14px; }
 
 .signin {

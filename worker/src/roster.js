@@ -10,7 +10,7 @@
 //   https://dl.theconveniencesuite.com/google/callback
 //   http://localhost:8788/google/callback   (npm run dev)
 const G_COOKIE = 'roster_google';
-const STATE_COOKIE = 'roster_google_state';
+const STATE_MINUTES = 10;
 const SCOPES = [
   'openid', 'email',
   'https://www.googleapis.com/auth/calendar.calendarlist.readonly',
@@ -52,14 +52,36 @@ async function unseal(env, value) {
   }
 }
 
+// Lax, not Strict: the cookie is set on the trip back from Google, a cross-site navigation, and every
+// browser accepts a Lax cookie there. The calendar calls still need the Strict owner session, and
+// writes also check the Origin header.
 const tokenCookie = (url, value, maxAge) =>
-  `${G_COOKIE}=${value}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${secure(url)}`;
+  `${G_COOKIE}=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure(url)}`;
+
+// The OAuth state is "<expiry>.<nonce>.<hmac>", signed with SESSION_KEY. Only /google/connect, which
+// needs the owner session, hands one out, so a valid state proves the owner started this sign-in; and
+// because nothing is kept in a cookie, starting Connect twice (two tabs) can't invalidate the first.
+async function stateMac(env, data) {
+  const key = await crypto.subtle.importKey('raw', enc.encode(env.SESSION_KEY), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return b64url(await crypto.subtle.sign('HMAC', key, enc.encode(`roster-google-state|${data}`)));
+}
+async function newState(env) {
+  const data = `${Date.now() + STATE_MINUTES * 60e3}.${b64url(crypto.getRandomValues(new Uint8Array(16)))}`;
+  return `${data}.${await stateMac(env, data)}`;
+}
+async function stateOk(env, state) {
+  const [expiry, nonce, mac] = String(state || '').split('.');
+  if (!expiry || !nonce || !mac || Number(expiry) < Date.now()) return false;
+  const want = enc.encode(await stateMac(env, `${expiry}.${nonce}`));
+  const got = enc.encode(mac);
+  return want.byteLength === got.byteLength && crypto.subtle.timingSafeEqual(want, got);
+}
 
 // A short page that moves on to Roster Reader by itself. The trip back from Google is a cross-site
 // redirect, which doesn't carry the SameSite=Strict session cookie; a navigation started by this
-// page does.
-function bounce(url, result, setCookies = []) {
-  const target = `/roster-reader?google=${result}`;
+// page does. `why` says what went wrong, so the page can show it.
+function bounce(url, result, setCookies = [], why = '') {
+  const target = `/roster-reader?google=${result}${why ? `&why=${encodeURIComponent(why)}` : ''}`.replace(/&/g, '&amp;');
   const headers = new Headers({
     'Content-Type': 'text/html; charset=utf-8',
     'Cache-Control': 'no-store',
@@ -172,23 +194,26 @@ export async function roster(request, env, url, { signedIn, fromGitHub }) {
   const p = url.pathname;
   if (p !== '/roster-reader' && !p.startsWith('/google/') && !p.startsWith('/calendar/')) return null;
 
-  // Google sends the browser back here cross-site, without the session cookie; the state cookie, set
-  // only by /google/connect for the signed-in owner, is what ties this answer to that request.
+  // Google sends the browser back here cross-site, without the session cookie; the signed state, which
+  // only /google/connect hands out to the signed-in owner, is what ties this answer to that request.
   if (p === '/google/callback') {
-    const state = readCookie(request, STATE_COOKIE);
-    const clearState = `${STATE_COOKIE}=; Path=/google; HttpOnly; SameSite=Lax; Max-Age=0${secure(url)}`;
-    if (url.searchParams.get('error')) return bounce(url, 'denied', [clearState]);
-    if (!state || state !== url.searchParams.get('state') || !url.searchParams.get('code')) return bounce(url, 'error', [clearState]);
+    if (url.searchParams.get('error')) return bounce(url, 'denied', [], url.searchParams.get('error'));
+    if (!url.searchParams.get('code')) return bounce(url, 'error', [], 'no_code');
+    if (!(await stateOk(env, url.searchParams.get('state')))) return bounce(url, 'error', [], 'expired');
     const { ok, body } = await googleToken(env, {
       grant_type: 'authorization_code',
       code: url.searchParams.get('code'),
       redirect_uri: `${url.origin}/google/callback`,
     });
-    if (!ok || !body.refresh_token) return bounce(url, 'error', [clearState]);
+    if (!ok) {
+      console.error('Google token exchange failed', body.error, body.error_description);
+      return bounce(url, 'error', [], body.error || 'token');
+    }
+    if (!body.refresh_token) return bounce(url, 'error', [], 'no_refresh_token');
     let email = null;
     try { email = JSON.parse(new TextDecoder().decode(fromB64url(body.id_token.split('.')[1]))).email || null; } catch { /* no email: fine */ }
     // Chrome keeps cookies for at most 400 days
-    return bounce(url, 'connected', [clearState, tokenCookie(url, await seal(env, { rt: body.refresh_token, email }), 400 * 86400)]);
+    return bounce(url, 'connected', [tokenCookie(url, await seal(env, { rt: body.refresh_token, email }), 400 * 86400)]);
   }
 
   if (!(await signedIn(request, env))) {
@@ -225,7 +250,7 @@ export async function roster(request, env, url, { signedIn, fromGitHub }) {
 
   if (p === '/google/connect' && request.method === 'GET') {
     if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET) return new Response('Google sign-in is not set up yet: add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to the Worker.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
-    const state = b64url(crypto.getRandomValues(new Uint8Array(24)));
+    const state = await newState(env);
     const auth = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     auth.search = new URLSearchParams({
       client_id: env.GOOGLE_CLIENT_ID,
@@ -237,10 +262,7 @@ export async function roster(request, env, url, { signedIn, fromGitHub }) {
       include_granted_scopes: 'true',
       state,
     });
-    return new Response(null, {
-      status: 302,
-      headers: { Location: auth.toString(), 'Set-Cookie': `${STATE_COOKIE}=${state}; Path=/google; HttpOnly; SameSite=Lax; Max-Age=600${secure(url)}` },
-    });
+    return Response.redirect(auth.toString(), 302);
   }
 
   // Writes only from this site's own pages (on top of the SameSite=Strict session cookie)

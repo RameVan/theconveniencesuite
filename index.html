@@ -147,14 +147,14 @@
           </details>
         </article>
 
-        <!-- Opt Out is still being tested: no downloads until it's ready (then drop .upcoming and add the actions back) -->
-        <article class="app upcoming" style="--app-ink: #b4541c; --app-a: #f08a2c; --app-b: #f6b73c">
+        <!-- Opt Out: the version, file name and link below are updated by Unsubscriber/desktop/publish.mjs on every release. -->
+        <article class="app" id="optout" style="--app-ink: #b4541c; --app-a: #f08a2c; --app-b: #f6b73c">
           <div class="app-top">
             <img class="app-icon" src="assets/optout.svg" alt="" width="60" height="60">
-            <span class="tag">Coming soon</span>
+            <span class="tag">Windows app · testers</span>
           </div>
           <h3>Opt Out</h3>
-          <p class="desc">Clears the newsletters out of your Gmail. It finds every mailing list you're on, sorts them into categories, and unsubscribes in bulk while keeping banking, orders and other important mail safe. It also tells you which senders have had a data breach.</p>
+          <p class="desc">Clears the newsletters out of your Gmail. It finds every mailing list you're on, sorts them by company and type, and unsubscribes in bulk while keeping banking, orders and other important mail safe. It also tells you which senders have had a data breach.</p>
           <ul class="chips">
             <li>Bulk unsubscribe</li>
             <li>Protects important mail</li>
@@ -162,10 +162,22 @@
           </ul>
           <div class="app-bar"></div>
           <div class="app-foot">
-            <span class="version">Web app · Chrome extension</span>
-            <span class="pending">Still in testing · no download yet</span>
+            <span class="version">v0.1.6 · Windows 10 / 11 · 113 MB</span>
+            <div class="actions">
+              <a class="btn" href="https://github.com/RameVan/optout-releases/releases/download/v0.1.6/OptOut-0.1.6.exe">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>Download</a>
+            </div>
           </div>
-          <p class="upcoming-note">Opt Out hasn't been tried on real mailboxes yet. It will appear here as a download once it has.</p>
+          <p class="upcoming-note">In testing: for now, signing in with Google works only for invited testers.</p>
+          <details>
+            <summary>How to start it</summary>
+            <ol>
+              <li>Download <code>OptOut-0.1.6.exe</code> and double-click it. Nothing is installed.</li>
+              <li>Windows may say <b>Windows protected your PC</b> (the app isn't code-signed yet): choose <b>More info</b>, then <b>Run anyway</b>.</li>
+              <li>It opens in your browser. Sign in with Google and connect your Gmail; the scan keeps running from the tray icon.</li>
+              <li>New versions arrive by themselves: the tray icon offers <b>Restart to update</b>.</li>
+            </ol>
+          </details>
         </article>
 
       </div>

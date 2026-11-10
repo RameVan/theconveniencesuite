@@ -2,7 +2,8 @@
 # Run from anywhere:  powershell -File build-downloads.ps1
 # PantryPip is packaged with `git archive` of the files git tracks, as they are on disk
 # (no node_modules, .env, databases or other untracked/ignored files).
-# Opt Out is listed as coming soon: only its logo is copied until it has been tested.
+# Opt Out: only its logo is copied here; its Windows app is a GitHub release (RameVan/optout-releases)
+# and Unsubscriber/desktop/publish.mjs updates its card in index.html on every release.
 $ErrorActionPreference = 'Stop'
 $site = $PSScriptRoot
 $apps = Split-Path $site -Parent

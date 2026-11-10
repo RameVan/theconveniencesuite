@@ -57,7 +57,9 @@ button.btn { border: 0; font-family: inherit; cursor: pointer; }
 
 .app .tag.pre { border-style: solid; border-color: var(--app-b); background: var(--app-b); color: var(--ink); }
 
-.access { margin-top: 72px; }
+.access, .tools { margin-top: 72px; }
+.roster-card { --app-ink: #b4541c; --app-a: #f6b73c; --app-b: #e4502b; }
+svg.app-icon { flex: none; }
 
 /* Long-form text pages (privacy.html) */
 .prose { max-width: 760px; }

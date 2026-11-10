@@ -12,7 +12,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css?v=11">
-  <link rel="stylesheet" href="private.css?v=4">
+  <link rel="stylesheet" href="private.css?v=5">
 </head>
 <body>
   <header class="hero" id="top">
@@ -69,6 +69,36 @@
       </div>
       <div class="grid" data-apps></div>
 
+      <!-- Owner tools served by the Worker after sign-in (see worker/src/roster.js) -->
+      <section class="tools" aria-labelledby="tools-title">
+        <div class="private-head">
+          <div>
+            <p class="label">Tools</p>
+            <h2 id="tools-title">Just for you.</h2>
+          </div>
+        </div>
+        <div class="grid">
+          <article class="app roster-card">
+            <div class="app-top">
+              <svg class="app-icon" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#0b0b0b"/><rect x="96" y="148" width="264" height="54" fill="#f6f1e9"/><rect x="96" y="148" width="264" height="16" fill="#f6b73c"/><rect x="152" y="230" width="264" height="54" fill="#f6f1e9"/><rect x="152" y="230" width="264" height="16" fill="#f08a2c"/><rect x="246" y="230" width="44" height="16" fill="#b32620"/><rect x="116" y="312" width="250" height="54" fill="#f6f1e9"/><rect x="116" y="312" width="250" height="16" fill="#e4502b"/></svg>
+              <span class="tag pre">Web app · owner only</span>
+            </div>
+            <h3>Roster Reader</h3>
+            <p class="desc">Drop a screenshot of your work roster and the shifts go into Google Calendar. It's read in your browser: the pixels give the exact times, text recognition reads the dates.</p>
+            <ul class="chips">
+              <li>Exact times from the pixels</li>
+              <li>Skips shifts already in your calendar</li>
+              <li>Free, nothing uploaded</li>
+            </ul>
+            <div class="app-bar"></div>
+            <div class="app-foot">
+              <span class="version">Runs on dl.theconveniencesuite.com</span>
+              <div class="actions"><a class="btn" data-roster-link href="https://dl.theconveniencesuite.com/roster-reader">Open</a></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <!-- Opt Out access: who may sign in to the app (see worker/src/index.js) -->
       <section class="access" aria-labelledby="access-title">
         <div class="private-head">
@@ -124,6 +154,6 @@
     </div>
   </template>
 
-  <script src="private.js?v=4"></script>
+  <script src="private.js?v=5"></script>
 </body>
 </html>

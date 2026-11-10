@@ -40,6 +40,9 @@ async function api(path, options = {}) {
   return body;
 }
 
+// Roster Reader runs on the Worker's own domain, so the session cookie goes with it
+document.querySelector('[data-roster-link]').href = `${API}/roster-reader`;
+
 const fileUrl = path => `${API}/file/${path.split('/').map(encodeURIComponent).join('/')}`;
 
 function show(name) {

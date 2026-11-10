@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Opt Out privacy policy · The Convenience Suite</title>
+  <meta name="description" content="How Opt Out, the Gmail unsubscribe app from The Convenience Suite, handles your data.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; font-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="theme-color" content="#0b0b0b">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="private.css?v=4">
+</head>
+<body>
+  <header class="hero" id="top">
+    <div class="wrap topbar">
+      <a class="brand" href="./" aria-label="The Convenience Suite home">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="10" height="10" fill="#f6b73c"/><rect x="12" width="10" height="10" fill="#f08a2c"/><rect y="12" width="10" height="10" fill="#e4502b"/><rect x="12" y="12" width="10" height="10" fill="#ffffff"/></svg>
+        <span>The Convenience Suite</span>
+      </a>
+      <nav class="nav" aria-label="Sections">
+        <a href="./#optout">Opt Out</a>
+      </nav>
+    </div>
+    <div class="wrap hero-body private-hero">
+      <div class="hero-text">
+        <p class="label">Opt Out · privacy policy</p>
+        <h1>Your mail stays on your computer.</h1>
+        <p class="lede">What Opt Out reads from your Gmail, where it keeps it, and the few things that ever leave your computer.</p>
+      </div>
+    </div>
+    <div class="stripes"></div>
+  </header>
+
+  <main class="wrap private prose">
+    <p class="hint">Last updated 10 November 2026. Questions: <a href="mailto:rame@theconveniencesuite.com">rame@theconveniencesuite.com</a>.</p>
+
+    <h2>Who we are</h2>
+    <p>Opt Out is a free app from The Convenience Suite, made by one person (Rame). It finds the mailing lists in your Gmail and helps you unsubscribe from the ones you don't want. It runs on your own Windows computer: there is no Opt Out server holding your mail.</p>
+
+    <h2>What Opt Out reads from your Google account</h2>
+    <ul>
+      <li><b>Your name, email address and profile picture</b> (Google sign-in), to know whose mailbox it is.</li>
+      <li><b>Email headers only</b> (Gmail permission <code>gmail.metadata</code>): sender, recipient, subject, date, the mailing-list and unsubscribe headers, and Gmail's labels. Opt Out cannot read the body or attachments of your emails; Google doesn't give it that permission. The recipient headers are only used to recognise "+aliases" of your own address; other recipients are not kept.</li>
+      <li><b>Sending email, only if you allow it</b> (Gmail permission <code>gmail.send</code>, asked for separately): used solely to send the unsubscribe emails you choose, to the address the sender lists for unsubscribing or, if you turn that on, the address it mails you from.</li>
+    </ul>
+
+    <h2>Where your data is kept</h2>
+    <p>Everything Opt Out learns from your mailbox is stored <b>only on your computer</b>, in the folder <code>%APPDATA%\Opt Out</code>: the senders it found, counts and dates, the latest subject line per sender, and the history of your unsubscribe requests. Your Google access tokens are stored there encrypted. None of it is sent to us, sold, used for advertising, or given to AI services; Opt Out sorts your mail with fixed rules on your computer.</p>
+
+    <h2>What leaves your computer</h2>
+    <ul>
+      <li><b>Unsubscribe requests</b> go to the sender you chose, using the unsubscribe link or address that sender put in its own emails. That is the point of the app.</li>
+      <li><b>Breach check (off unless you turn it on):</b> your email addresses are checked against the public breach database of XposedOrNot (or Have I Been Pwned, if configured).</li>
+      <li><b>Sender logos (off unless you turn them on):</b> logos are loaded from DuckDuckGo's icon service, which then sees the sender domains you are looking at.</li>
+      <li><b>Update check:</b> the app asks GitHub whether a newer version exists. No personal data is sent.</li>
+      <li><b>Access list:</b> while Opt Out is in testing, only approved people can sign in. When you ask for access we store your email address, and the optional name and note you give, on our access list (hosted by Cloudflare) so we can approve it. When you sign in, the app checks your address against that list. We use this only to decide who may use Opt Out; ask us and we delete it.</li>
+    </ul>
+
+    <h2>Google API Services User Data Policy</h2>
+    <p>Opt Out's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements. Gmail data is used only to show you your mailing lists and to carry out the unsubscribes you ask for; it is not transferred to anyone else, used for ads, or read by people.</p>
+
+    <h2>Removing your data</h2>
+    <ul>
+      <li>In the app, <b>Disconnect</b> a mailbox (Accounts) or <b>delete your account</b> (Settings). Opt Out revokes its Google access at once and deletes what it stored for that mailbox.</li>
+      <li>To remove Opt Out completely, quit it from the tray, delete the <code>OptOut-…exe</code> file and the folder <code>%APPDATA%\Opt Out</code>.</li>
+      <li>You can also remove Opt Out's access at any time at <a href="https://myaccount.google.com/permissions" rel="noopener">myaccount.google.com/permissions</a>.</li>
+      <li>To be removed from the access list, email <a href="mailto:rame@theconveniencesuite.com">rame@theconveniencesuite.com</a>.</li>
+    </ul>
+
+    <h2>Changes</h2>
+    <p>If this policy changes, the new version is posted on this page with a new date.</p>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>© 2026 The Convenience Suite</span>
+      <span><a href="./">All apps</a></span>
+    </div>
+  </footer>
+</body>
+</html>

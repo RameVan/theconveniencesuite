@@ -12,7 +12,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css?v=11">
-  <link rel="stylesheet" href="private.css?v=3">
+  <link rel="stylesheet" href="private.css?v=4">
 </head>
 <body>
   <header class="hero" id="top">
@@ -68,6 +68,25 @@
         <p class="hint" data-status>Loading…</p>
       </div>
       <div class="grid" data-apps></div>
+
+      <!-- Opt Out access: who may sign in to the app (see worker/src/index.js) -->
+      <section class="access" aria-labelledby="access-title">
+        <div class="private-head">
+          <div>
+            <p class="label">Opt Out · Google sign-in</p>
+            <h2 id="access-title">Who can use Opt Out.</h2>
+          </div>
+          <p class="hint" data-access-status>Loading…</p>
+        </div>
+        <p class="hint">People ask for access from the app. Only approved addresses are sent on to Google, so nobody else uses one of the app's 100 Google sign-in places.</p>
+        <form class="access-add" data-access-add novalidate>
+          <label class="visually-hidden" for="access-email">Email address to approve</label>
+          <input id="access-email" name="email" type="email" placeholder="Approve an address directly" autocomplete="off" spellcheck="false">
+          <button class="btn" type="submit">Approve</button>
+        </form>
+        <p class="error" role="alert" data-access-error hidden></p>
+        <div class="access-list" data-access-list></div>
+      </section>
     </section>
   </main>
 
@@ -96,6 +115,15 @@
     </article>
   </template>
 
-  <script src="private.js?v=3"></script>
+  <template id="access-row">
+    <div class="access-row">
+      <div class="who"><b></b><span class="name"></span><span class="note"></span></div>
+      <span class="state"></span>
+      <span class="when"></span>
+      <div class="actions"></div>
+    </div>
+  </template>
+
+  <script src="private.js?v=4"></script>
 </body>
 </html>

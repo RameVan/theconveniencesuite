@@ -89,8 +89,71 @@ function card(app) {
   return el;
 }
 
+// ---------- Opt Out access requests ----------
+const accessList = $('[data-access-list]');
+const accessStatus = $('[data-access-status]');
+const accessError = $('[data-access-error]');
+const accessAdd = $('[data-access-add]');
+const STATE_LABEL = { pending: 'Waiting', approved: 'Approved', denied: 'Denied' };
+const dateText = iso => { const d = new Date(iso); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }); };
+
+async function decide(email, decision) {
+  accessError.hidden = true;
+  try {
+    await api('/access/decide', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, decision }) });
+    await loadAccess();
+  } catch (err) {
+    if (err instanceof SignedOut) return showSignIn();
+    Object.assign(accessError, { textContent: err.message, hidden: false });
+  }
+}
+
+function accessRow(r) {
+  const el = $('#access-row').content.firstElementChild.cloneNode(true);
+  el.querySelector('.who b').textContent = r.email;
+  el.querySelector('.name').textContent = r.name || '';
+  el.querySelector('.note').textContent = r.note || '';
+  const state = el.querySelector('.state');
+  state.textContent = STATE_LABEL[r.status] || r.status;
+  state.classList.add(r.status);
+  el.querySelector('.when').textContent = dateText(r.decidedAt || r.requestedAt);
+  const actions = el.querySelector('.actions');
+  const button = (label, decision, ghost) => {
+    const b = Object.assign(document.createElement('button'), { type: 'button', className: ghost ? 'btn ghost' : 'btn', textContent: label });
+    b.addEventListener('click', () => { b.disabled = true; decide(r.email, decision); });
+    actions.append(b);
+  };
+  if (r.status !== 'approved') button('Approve', 'approved');
+  if (r.status === 'pending') button('Deny', 'denied', true);
+  if (r.status === 'approved') button('Revoke', 'denied', true);
+  button('Remove', 'remove', true);
+  return el;
+}
+
+async function loadAccess() {
+  try {
+    const { requests = [] } = await api('/access/list');
+    accessList.replaceChildren(...requests.map(accessRow));
+    const waiting = requests.filter(r => r.status === 'pending').length;
+    const approved = requests.filter(r => r.status === 'approved').length;
+    accessStatus.textContent = `${waiting} waiting · ${approved} approved`;
+  } catch (err) {
+    if (err instanceof SignedOut) return showSignIn();
+    accessStatus.textContent = err.message;
+  }
+}
+
+accessAdd.addEventListener('submit', e => {
+  e.preventDefault();
+  const email = accessAdd.email.value.trim();
+  if (!email) return;
+  accessAdd.reset();
+  decide(email, 'approved');
+});
+
 async function load() {
   show('list');
+  loadAccess();
   status.textContent = 'Loading…';
   grid.replaceChildren();
   try {

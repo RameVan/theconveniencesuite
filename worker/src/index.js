@@ -108,11 +108,91 @@ async function login(request, env, headers) {
   });
 }
 
+// ---------- Opt Out access ----------
+// Google only lets a limited number of people ever sign in to an unverified app, so Opt Out asks
+// here first: people request access from the app, the owner approves them on private.html, and the
+// app only sends approved addresses on to Google. One KV entry per address: "optout:<email>".
+const ACCESS_STATES = ['pending', 'approved', 'denied'];
+const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[a-z]{2,}$/i;
+const accessKey = email => `optout:${email}`;
+const cleanEmail = value => {
+  const email = String(value || '').trim().toLowerCase();
+  return email.length <= 254 && EMAIL.test(email) ? email : null;
+};
+
+async function readAccess(env, email) {
+  return (await env.ACCESS.get(accessKey(email), 'json')) || null;
+}
+
+// Public: the app asks whether an address may sign in. Only the state is returned.
+async function accessStatus(url, env, headers) {
+  const email = cleanEmail(url.searchParams.get('email'));
+  if (!email) return json({ error: 'Enter a valid email address.' }, 400, headers);
+  return json({ status: (await readAccess(env, email))?.status || 'none' }, 200, headers);
+}
+
+// Public: someone asks for access. Repeating a request doesn't change an existing decision.
+async function accessRequest(request, env, headers) {
+  const ip = request.headers.get('CF-Connecting-IP') || 'local';
+  if (env.REQUEST_LIMIT && !(await env.REQUEST_LIMIT.limit({ key: ip })).success) {
+    return json({ error: 'Too many requests. Wait a minute and try again.' }, 429, headers);
+  }
+  let body;
+  try { body = await request.json(); } catch { return json({ error: 'Bad request.' }, 400, headers); }
+  const email = cleanEmail(body.email);
+  if (!email) return json({ error: 'Enter a valid email address.' }, 400, headers);
+  const existing = await readAccess(env, email);
+  if (existing) return json({ status: existing.status }, 200, headers);
+  const name = String(body.name || '').trim().slice(0, 80);
+  const note = String(body.note || '').trim().slice(0, 300);
+  await env.ACCESS.put(accessKey(email), JSON.stringify({ email, name, note, status: 'pending', requestedAt: new Date().toISOString() }));
+  return json({ status: 'pending' }, 201, headers);
+}
+
+// Owner only: every request, newest first.
+async function accessList(env, headers) {
+  const entries = [];
+  let cursor;
+  do {
+    const page = await env.ACCESS.list({ prefix: 'optout:', cursor });
+    const values = await Promise.all(page.keys.map(k => env.ACCESS.get(k.name, 'json')));
+    entries.push(...values.filter(Boolean));
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+  entries.sort((a, b) => String(b.requestedAt).localeCompare(String(a.requestedAt)));
+  return json({ requests: entries }, 200, headers);
+}
+
+// Owner only: approve, deny, or remove (forget) an address. Approving an address nobody
+// requested adds it directly.
+async function accessDecide(request, env, headers) {
+  let body;
+  try { body = await request.json(); } catch { return json({ error: 'Bad request.' }, 400, headers); }
+  const email = cleanEmail(body.email);
+  if (!email) return json({ error: 'Enter a valid email address.' }, 400, headers);
+  if (body.decision === 'remove') {
+    await env.ACCESS.delete(accessKey(email));
+    return json({ ok: true }, 200, headers);
+  }
+  if (!ACCESS_STATES.includes(body.decision) || body.decision === 'pending') return json({ error: 'Unknown decision.' }, 400, headers);
+  const entry = (await readAccess(env, email)) || { email, name: '', note: 'Added by the owner', requestedAt: new Date().toISOString() };
+  await env.ACCESS.put(accessKey(email), JSON.stringify({ ...entry, status: body.decision, decidedAt: new Date().toISOString() }));
+  return json({ ok: true }, 200, headers);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const headers = cors(request, env);
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
+
+    // Opt Out access: requests and status checks are public (the app has no owner session)
+    if (url.pathname === '/access/status' && request.method === 'GET') return accessStatus(url, env, headers);
+    if (url.pathname === '/access/request' && request.method === 'POST') return accessRequest(request, env, headers);
+    if (url.pathname === '/access/decide' && request.method === 'POST') {
+      if (!(await signedIn(request, env))) return json({ error: 'Signed out.' }, 401, headers);
+      return accessDecide(request, env, headers);
+    }
 
     if (url.pathname === '/login' && request.method === 'POST') return login(request, env, headers);
     if (url.pathname === '/logout' && request.method === 'POST') {
@@ -123,6 +203,7 @@ export default {
 
     if (!(await signedIn(request, env))) return json({ error: 'Signed out.' }, 401, headers);
     if (url.pathname === '/me') return json({ user: env.LOGIN_USER }, 200, headers);
+    if (url.pathname === '/access/list') return accessList(env, headers);
 
     // /apps is the private repo's apps.json; /file/<path> is one of its builds or icons
     const path = url.pathname === '/apps' ? 'apps.json' : url.pathname.startsWith('/file/') ? decodeURIComponent(url.pathname.slice(6)) : null;

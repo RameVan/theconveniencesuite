@@ -65,6 +65,17 @@ export async function nomadraw(request, env, url, { signedIn }) {
     const page = (request.headers.get('Accept') || '').includes('text/html');
     return page ? signInPage() : new Response('Signed out', { status: 401, headers: { 'Cache-Control': 'no-store' } });
   }
+  // Sharp imagery for close zoom: Esri World Imagery through the ArcGIS basemap tile service, with the key kept here
+  // (secret ESRI_KEY: npx wrangler secret put ESRI_KEY). /api/imagery tells the app whether it is there.
+  if (p === `${PREFIX}/api/imagery`) return new Response(JSON.stringify({ esri: !!env.ESRI_KEY }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+  const tile = p.match(/^\/nomadraw\/api\/esri\/(\d{1,2})\/(\d{1,7})\/(\d{1,7})$/);
+  if (tile) {
+    if (!env.ESRI_KEY) return new Response('No imagery key on the server.', { status: 503 });
+    const res = await fetch(`https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/${tile[1]}/${tile[2]}/${tile[3]}?token=${encodeURIComponent(env.ESRI_KEY)}`);
+    if (!res.ok) return new Response(`Imagery answered ${res.status}.`, { status: res.status === 404 ? 404 : 502, headers: { 'Cache-Control': 'no-store' } });
+    return new Response(res.body, { headers: { 'Content-Type': res.headers.get('Content-Type') || 'image/jpeg', 'Cache-Control': 'private, max-age=86400', 'X-Content-Type-Options': 'nosniff' } });
+  }
+  if (p.startsWith(`${PREFIX}/api/`)) return new Response('Not found', { status: 404 });
   if (!env.ASSETS) return new Response('Nomadraw is not deployed with this Worker yet (run sync-nomadraw.mjs, then deploy).', { status: 503 });
   const res = await env.ASSETS.fetch(request);
   if (res.status === 404) return new Response("Not in this Nomadraw build. Run sync-nomadraw.mjs and deploy again.", { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

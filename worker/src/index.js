@@ -6,7 +6,8 @@
 // Secrets (set with `npm run set-login` and `npx wrangler secret put GITHUB_TOKEN`, never in the repo):
 //   LOGIN_USER, PASSWORD_HASH ("pbkdf2$<iterations>$<salt>$<hash>", base64url), SESSION_KEY, GITHUB_TOKEN
 // Roster Reader (src/roster.js) also needs GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.
-// Nomadraw (src/nomadraw.js, work in progress) comes from the Worker's static assets after the same session check.
+// Nomadraw (src/nomadraw.js, work in progress) comes from the Worker's static assets after the same session check;
+// its sharp map imagery needs ESRI_KEY (an ArcGIS Location Platform API key with the static basemap tiles privilege).
 import { roster } from './roster.js';
 import { nomadraw } from './nomadraw.js';
 

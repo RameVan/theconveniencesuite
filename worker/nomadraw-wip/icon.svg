@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Nomadraw WIP home-screen icon (full bleed: iOS rounds the corners itself). The Warm Glass mark plus a WIP band. -->
+  <rect width="512" height="512" fill="#1c1b18"/>
+  <g fill="none" stroke="#3a2c1e" stroke-width="10" stroke-linecap="round">
+    <path d="M-20 150 C80 120 140 190 240 150 S420 90 540 130"/>
+    <path d="M-20 230 C90 200 160 270 260 230 S430 170 540 210"/>
+  </g>
+  <path d="M118 360 C150 298 210 328 238 268 S300 158 382 118" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="40" stroke-linecap="round"/>
+  <path d="M118 360 C150 298 210 328 238 268 S300 158 382 118" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="118" cy="360" r="26" fill="#1c1b18" stroke="#ffffff" stroke-width="12"/>
+  <circle cx="238" cy="268" r="15" fill="#ffffff"/>
+  <circle cx="382" cy="118" r="46" fill="#e8692e" opacity="0.28"/>
+  <circle cx="382" cy="118" r="26" fill="#e8692e" stroke="#ffffff" stroke-width="7"/>
+  <rect y="408" width="512" height="104" fill="#e8692e"/>
+  <text x="256" y="481" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="68" font-weight="800" letter-spacing="14" fill="#ffffff">WIP</text>
+</svg>

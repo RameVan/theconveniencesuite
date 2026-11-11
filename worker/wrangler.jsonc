@@ -15,6 +15,9 @@
     { "name": "LOGIN_LIMIT", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } },
     { "name": "REQUEST_LIMIT", "namespace_id": "1002", "simple": { "limit": 3, "period": 60 } }
   ],
+  // Nomadraw (WIP) at /nomadraw/: files from assets/nomadraw/ (git-ignored, filled by sync-nomadraw.mjs). The Worker runs
+  // first for every request, so the files only go out after the session check (src/nomadraw.js).
+  "assets": { "directory": "./assets", "binding": "ASSETS", "run_worker_first": true },
   // Opt Out access requests and approvals (key "optout:<email>")
   "kv_namespaces": [{ "binding": "ACCESS", "id": "15d3e9bd953048579ea94bc27fcc59f7" }]
 }

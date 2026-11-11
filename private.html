@@ -12,7 +12,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css?v=14">
-  <link rel="stylesheet" href="private.css?v=6">
+  <link rel="stylesheet" href="private.css?v=7">
 </head>
 <body>
   <header class="hero" id="top">
@@ -73,7 +73,7 @@
       <div class="grid" data-apps></div>
       <p class="soon"><b>Not public yet.</b> When a build is ready it moves to the <a href="./#apps">main page</a> for everyone.</p>
 
-      <!-- Owner tools served by the Worker after sign-in (see worker/src/roster.js) -->
+      <!-- Owner tools served by the Worker after sign-in (see worker/src/roster.js and worker/src/nomadraw.js) -->
       <section class="tools" aria-labelledby="tools-title">
         <div class="private-head">
           <div>
@@ -98,6 +98,23 @@
             <div class="app-foot">
               <span class="version">Runs on dl.theconveniencesuite.com</span>
               <div class="actions"><a class="btn" data-roster-link href="https://dl.theconveniencesuite.com/roster-reader">Open</a></div>
+            </div>
+          </article>
+          <article class="app nomadraw-card">
+            <div class="app-top">
+              <svg class="app-icon" viewBox="0 0 512 512" aria-hidden="true"><defs><clipPath id="nd-tile"><rect width="512" height="512" rx="112"/></clipPath></defs><g clip-path="url(#nd-tile)"><rect width="512" height="512" fill="#1c1b18"/><path d="M118 340 C150 278 210 308 238 248 S300 138 382 98" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/><circle cx="118" cy="340" r="26" fill="#1c1b18" stroke="#fff" stroke-width="12"/><circle cx="238" cy="248" r="15" fill="#fff"/><circle cx="382" cy="98" r="26" fill="#e8692e" stroke="#fff" stroke-width="7"/><rect y="408" width="512" height="104" fill="#e8692e"/></g></svg>
+              <span class="tag pre">Web app · WIP</span>
+            </div>
+            <h3>Nomadraw</h3>
+            <p class="desc">Draw a line on the map and it becomes a road trip for the van, split into days and nights. Work in progress: the newest build, to try on your phone.</p>
+            <ul class="chips">
+              <li>Safari: Share, then Add to Home Screen</li>
+              <li>Trips stay on the device</li>
+            </ul>
+            <div class="app-bar"></div>
+            <div class="app-foot">
+              <span class="version">Runs on dl.theconveniencesuite.com</span>
+              <div class="actions"><a class="btn" data-nomadraw-link href="https://dl.theconveniencesuite.com/nomadraw/">Open</a></div>
             </div>
           </article>
         </div>
@@ -158,6 +175,6 @@
     </div>
   </template>
 
-  <script src="private.js?v=6"></script>
+  <script src="private.js?v=7"></script>
 </body>
 </html>

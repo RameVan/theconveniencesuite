@@ -6,7 +6,9 @@
 // Secrets (set with `npm run set-login` and `npx wrangler secret put GITHUB_TOKEN`, never in the repo):
 //   LOGIN_USER, PASSWORD_HASH ("pbkdf2$<iterations>$<salt>$<hash>", base64url), SESSION_KEY, GITHUB_TOKEN
 // Roster Reader (src/roster.js) also needs GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.
+// Nomadraw (src/nomadraw.js, work in progress) comes from the Worker's static assets after the same session check.
 import { roster } from './roster.js';
+import { nomadraw } from './nomadraw.js';
 
 const COOKIE = 'suite_session';
 const SESSION_DAYS = 30;
@@ -188,6 +190,10 @@ export default {
     const url = new URL(request.url);
     const headers = cors(request, env);
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
+
+    // Nomadraw (WIP): the app, for the signed-in owner only
+    const nomadrawResponse = await nomadraw(request, env, url, { signedIn });
+    if (nomadrawResponse) return nomadrawResponse;
 
     // Roster Reader: the page, its Google sign-in and its calendar calls (same origin, no CORS)
     const rosterResponse = await roster(request, env, url, { signedIn, fromGitHub });

@@ -64,6 +64,7 @@ button.btn { border: 0; font-family: inherit; cursor: pointer; }
 
 .access, .tools { margin-top: 72px; }
 .roster-card { --app-ink: #b4541c; --app-a: #f6b73c; --app-b: #e4502b; }
+.nomadraw-card { --app-ink: #b4541c; --app-a: #f39a5b; --app-b: #e8692e; }
 svg.app-icon { flex: none; }
 
 /* Long-form text pages (privacy.html) */

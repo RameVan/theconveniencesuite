@@ -80,8 +80,12 @@ export async function nomadraw(request, env, url, { signedIn }) {
   const res = await env.ASSETS.fetch(request);
   if (res.status === 404) return new Response("Not in this Nomadraw build. Run sync-nomadraw.mjs and deploy again.", { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
   const out = new Response(res.body, res);
-  // private: nothing in a shared cache; the app files are re-checked on each load (it changes often while it's a WIP)
-  out.headers.set('Cache-Control', open ? 'public, max-age=3600' : 'private, no-cache');
+  // private: nothing in a shared cache. Files asked for with a version (…?v=1.6.3: the core, the map library, the map
+  // styles) never change under that address, and the vendored libraries, fonts and flags rarely do: the browser keeps
+  // them. The few small unversioned files (index.html, nomadraw.js, kit.js, icons.js) are re-checked on each load.
+  const kept = url.searchParams.has('v') ? 'private, max-age=31536000, immutable'
+    : /^\/nomadraw\/(core\/vendor|fonts|flags)\//.test(p) ? 'private, max-age=2592000' : 'private, no-cache';
+  out.headers.set('Cache-Control', open ? 'public, max-age=3600' : kept);
   out.headers.set('X-Robots-Tag', 'noindex');
   out.headers.set('X-Content-Type-Options', 'nosniff');
   return out;

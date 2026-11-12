@@ -54,7 +54,7 @@ const signInPage = () => new Response(`<!doctype html>
 </script></body></html>`, { status: 401, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
 
 // Handles /nomadraw and everything under it; returns null for anything else.
-export async function nomadraw(request, env, url, { signedIn }) {
+export async function nomadraw(request, env, url, { signedIn, ctx }) {
   const p = url.pathname;
   if (p !== PREFIX && !p.startsWith(`${PREFIX}/`)) return null;
   if (request.method !== 'GET' && request.method !== 'HEAD') return new Response('Not found', { status: 404 });
@@ -67,13 +67,32 @@ export async function nomadraw(request, env, url, { signedIn }) {
   }
   // Sharp imagery for close zoom: Esri World Imagery through the ArcGIS basemap tile service, with the key kept here
   // (secret ESRI_KEY: npx wrangler secret put ESRI_KEY). /api/imagery tells the app whether it is there.
-  if (p === `${PREFIX}/api/imagery`) return new Response(JSON.stringify({ esri: !!env.ESRI_KEY }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
+  if (p === `${PREFIX}/api/imagery`) return new Response(JSON.stringify({ esri: !!env.ESRI_KEY, tiles: true }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
   const tile = p.match(/^\/nomadraw\/api\/esri\/(\d{1,2})\/(\d{1,7})\/(\d{1,7})$/);
   if (tile) {
     if (!env.ESRI_KEY) return new Response('No imagery key on the server.', { status: 503 });
     const res = await fetch(`https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/${tile[1]}/${tile[2]}/${tile[3]}?token=${encodeURIComponent(env.ESRI_KEY)}`);
     if (!res.ok) return new Response(`Imagery answered ${res.status}.`, { status: res.status === 404 ? 404 : 502, headers: { 'Cache-Control': 'no-store' } });
     return new Response(res.body, { headers: { 'Content-Type': res.headers.get('Content-Type') || 'image/jpeg', 'Cache-Control': 'private, max-age=86400', 'X-Content-Type-Options': 'nosniff' } });
+  }
+  // Map tiles through here: fetched once from their (free, sometimes slow, sometimes uncacheable) servers, then kept
+  // at Cloudflare's edge and in the browser for 30 days. /api/t/<source>/<a>/<b>/<c>, numbers in the source's own order.
+  const t = p.match(/^\/nomadraw\/api\/t\/(s2|bm|dem)\/(\d{1,2})\/(\d{1,7})\/(\d{1,7})$/);
+  if (t) {
+    const [, src, a, b, c] = t;
+    const upstream = src === 's2' ? `https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/${a}/${b}/${c}.jpg`
+      : src === 'bm' ? `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/${a}/${b}/${c}.jpeg`
+      : `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${a}/${b}/${c}.png`;
+    const browser = { 'Cache-Control': 'private, max-age=2592000, immutable', 'X-Content-Type-Options': 'nosniff' };
+    const key = new Request(`${url.origin}${p}`);
+    const hit = await caches.default.match(key);
+    if (hit) return new Response(hit.body, { headers: { 'Content-Type': hit.headers.get('Content-Type'), ...browser, 'X-Tile-Cache': 'hit' } });
+    const res = await fetch(upstream);
+    if (!res.ok) return new Response(`Tile server answered ${res.status}.`, { status: res.status === 404 ? 404 : 502, headers: { 'Cache-Control': 'no-store' } });
+    const type = res.headers.get('Content-Type') || (src === 'dem' ? 'image/png' : 'image/jpeg');
+    const body = await res.arrayBuffer();
+    ctx?.waitUntil(caches.default.put(key, new Response(body, { headers: { 'Content-Type': type, 'Cache-Control': 'public, max-age=2592000' } })));
+    return new Response(body, { headers: { 'Content-Type': type, ...browser, 'X-Tile-Cache': 'miss' } });
   }
   if (p.startsWith(`${PREFIX}/api/`)) return new Response('Not found', { status: 404 });
   if (!env.ASSETS) return new Response('Nomadraw is not deployed with this Worker yet (run sync-nomadraw.mjs, then deploy).', { status: 503 });

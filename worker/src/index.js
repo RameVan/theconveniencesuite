@@ -187,13 +187,13 @@ async function accessDecide(request, env, headers) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const headers = cors(request, env);
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
 
     // Nomadraw (WIP): the app, for the signed-in owner only
-    const nomadrawResponse = await nomadraw(request, env, url, { signedIn });
+    const nomadrawResponse = await nomadraw(request, env, url, { signedIn, ctx });
     if (nomadrawResponse) return nomadrawResponse;
 
     // Roster Reader: the page, its Google sign-in and its calendar calls (same origin, no CORS)

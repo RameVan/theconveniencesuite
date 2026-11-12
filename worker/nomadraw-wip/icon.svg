@@ -1,16 +1,70 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Nomadraw WIP home-screen icon (full bleed: iOS rounds the corners itself). The Warm Glass mark plus a WIP band. -->
-  <rect width="512" height="512" fill="#1c1b18"/>
-  <g fill="none" stroke="#3a2c1e" stroke-width="10" stroke-linecap="round">
-    <path d="M-20 150 C80 120 140 190 240 150 S420 90 540 130"/>
-    <path d="M-20 230 C90 200 160 270 260 230 S430 170 540 210"/>
+  <!-- Nomadraw WIP home-screen icon (full bleed: iOS rounds the corners itself). The app's Nib pin icon, moved up a
+       little, plus a Moss WIP band. Made from the Nomadraw checkout's brand/icon.svg. -->
+  <g transform="translate(0 -40)">
+  
+  <rect width="512" height="512" fill="#1f2a17"/>
+  <defs>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34452a"/>
+      <stop offset="1" stop-color="#131a0e"/>
+    </linearGradient>
+    <radialGradient id="light" cx="0.28" cy="0.16" r="0.85">
+      <stop offset="0" stop-color="#7d9060" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#7d9060" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset="1" stop-color="#ebe4d7"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ded5c4"/>
+      <stop offset="1" stop-color="#c2b8a4"/>
+    </linearGradient>
+    <radialGradient id="hole" cx="0.5" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#0a0f07"/>
+      <stop offset="1" stop-color="#222e19"/>
+    </radialGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="13"/></filter>
+    <filter id="softer" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7"/></filter>
+    <clipPath id="pin"><path d="M236 414 C214 372 120 292 120 200 A116 116 0 1 1 352 200 C352 292 258 372 236 414 Z"/></clipPath>
+  </defs>
+  <rect width="512" height="512" fill="url(#ground)"/>
+  <rect width="512" height="512" fill="url(#light)"/>
+  
+  <g fill="none" stroke-linecap="round">
+    <path d="M-20 300 C70 270 150 330 250 296 S430 250 540 280" stroke="#0e150a" stroke-width="8" opacity="0.5"/>
+    <path d="M-20 309 C70 279 150 339 250 305 S430 259 540 289" stroke="#4b5c33" stroke-width="3" opacity="0.45"/>
+    <path d="M-20 474 C110 440 210 500 310 458 S460 420 540 440" stroke="#0e150a" stroke-width="8" opacity="0.5"/>
+    <path d="M-20 483 C110 449 210 509 310 467 S460 429 540 449" stroke="#4b5c33" stroke-width="3" opacity="0.4"/>
   </g>
-  <path d="M118 360 C150 298 210 328 238 268 S300 158 382 118" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="40" stroke-linecap="round"/>
-  <path d="M118 360 C150 298 210 328 238 268 S300 158 382 118" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
-  <circle cx="118" cy="360" r="26" fill="#1c1b18" stroke="#ffffff" stroke-width="12"/>
-  <circle cx="238" cy="268" r="15" fill="#ffffff"/>
-  <circle cx="382" cy="118" r="46" fill="#e8692e" opacity="0.28"/>
-  <circle cx="382" cy="118" r="26" fill="#e8692e" stroke="#ffffff" stroke-width="7"/>
-  <rect y="408" width="512" height="104" fill="#e8692e"/>
-  <text x="256" y="481" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="68" font-weight="800" letter-spacing="14" fill="#ffffff">WIP</text>
+  
+  <g transform="translate(256 258) scale(1.08) translate(-230 -254)">
+    
+    <path d="M54 388 C92 350 138 354 160 390 C180 424 212 430 236 414" fill="none" stroke="#070b04" stroke-opacity="0.55" stroke-width="22" stroke-linecap="round" transform="translate(0 8)" filter="url(#softer)"/>
+    <path d="M54 388 C92 350 138 354 160 390 C180 424 212 430 236 414" fill="none" stroke="#a9b57a" stroke-width="22" stroke-linecap="round"/>
+    <path d="M56 383 C92 348 136 350 158 384" fill="none" stroke="#d3dcab" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+    
+    <g transform="rotate(13 236 414)">
+      <path d="M236 414 C214 372 120 292 120 200 A116 116 0 1 1 352 200 C352 292 258 372 236 414 Z" transform="translate(16 18)" fill="#000000" opacity="0.45" filter="url(#soft)"/>
+      <path d="M236 414 C214 372 120 292 120 200 A116 116 0 1 1 352 200 C352 292 258 372 236 414 Z" fill="url(#lit)"/>
+      <path d="M236 414 C258 372 352 292 352 200 A116 116 0 0 0 236 84 Z" fill="url(#shade)"/>
+      
+      <path d="M100 374 Q236 346 380 374 V450 H100 Z" fill="#8f9d5c" clip-path="url(#pin)"/>
+      <path d="M100 374 Q236 346 380 374" fill="none" stroke="#6d7a42" stroke-width="3" clip-path="url(#pin)"/>
+      
+      <path d="M236 352 C222 324 152 268 152 200 A84 84 0 0 1 236 116" fill="none" stroke="#cfc6b3" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+      <path d="M236 352 C250 324 320 268 320 200 A84 84 0 0 0 236 116" fill="none" stroke="#a89e89" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+      
+      <path d="M236 360 V236" stroke="#1a2415" stroke-width="7" stroke-linecap="round"/>
+      <path d="M236 403 V360" stroke="#2c3817" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="236" cy="200" r="38" fill="url(#hole)"/>
+      <circle cx="236" cy="200" r="38" fill="none" stroke="#b9ae98" stroke-width="3" opacity="0.75"/>
+      <path d="M204 186 A36 36 0 0 1 268 186" fill="none" stroke="#000000" stroke-width="5" stroke-linecap="round" opacity="0.35"/>
+    </g>
+  </g>
+</g>
+  <rect y="412" width="512" height="100" fill="#8f9d5c"/>
+  <rect y="412" width="512" height="4" fill="#c9d39b" opacity="0.6"/>
+  <text x="263" y="484" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="66" font-weight="800" letter-spacing="14" fill="#141412">WIP</text>
 </svg>

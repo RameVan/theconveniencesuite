@@ -40,6 +40,20 @@ $dot = [char]0xB7  # " · " separator; Windows PowerShell reads this file as ANS
 
 # Opt Out went public on 2026-11-10 (homepage download, published by Unsubscriber/desktop/publish.mjs).
 
+# Cour PoC-1 observer (AnimeTracker/spikes/poc-1/observer): a read-only test extension, loaded unpacked
+$co = Join-Path $root 'AnimeTracker\spikes\poc-1'
+$coVersion = (Get-Content (Join-Path $co 'observer\manifest.json') -Raw | ConvertFrom-Json).version
+Compress-Archive -Path (Join-Path $co 'observer\*') -DestinationPath (Join-Path $builds "cour-observer-$coVersion.zip") -Force
+Copy-Item (Join-Path $co 'icon.svg') (Join-Path $icons 'cour.svg') -Force
+$apps += [ordered]@{
+  name = 'Cour observer'; tag = "Browser extension $dot Test tool"; version = $coVersion; icon = 'icons/cour.svg'
+  colors = [ordered]@{ ink = '#b4541c'; a = '#f08a2c'; b = '#f6b73c' }
+  desc = 'Test tool for the Cour anime tracker: records what a tracker can see while you watch (titles, episode, video position), so each site can be graded before the tracker is built. Read-only; the log stays in your browser until you export it.'
+  chips = @('Crunchyroll, Netflix and 10 more built in', 'Observe any site you add, even when its domain ending changes', 'Read-only, local log')
+  note = 'Not a tracker yet. On the PC with the project, load AnimeTracker\installed\cour-observer instead: it then updates itself (NEW on the icon, Update now in its popup). Elsewhere: unzip, open chrome://extensions in Chrome, Edge or Dia, switch on Developer mode, click Load unpacked and choose the unzipped folder; to update, unzip the new zip over the same folder. Then follow the PoC-1 checklist and export the log. Checked on local test pages only (Edge 157; the built-in-site check also in Dia 1.6); not yet run on a real streaming site.'
+  files = @([ordered]@{ label = 'Extension'; path = "builds/cour-observer-$coVersion.zip" })
+}
+
 $json = [ordered]@{ apps = $apps } | ConvertTo-Json -Depth 6
 [IO.File]::WriteAllText((Join-Path $Clone 'apps.json'), $json, [Text.UTF8Encoding]::new($false))
 if (-not (Test-Path (Join-Path $Clone 'README.md'))) {

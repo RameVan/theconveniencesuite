@@ -34,5 +34,24 @@ foreach ($app in @(
 # and zip its extension\ folder as optout-extension-<version>.zip.
 Copy-Item (Join-Path $apps 'Unsubscriber\extension\icons\icon.svg') (Join-Path $assets 'optout.svg') -Force
 
+# Stay Tuned (formerly Cour, in the AnimeTracker folder): the private-channel zip made by
+# `node tools/package.mjs --channel private`, newest version in AnimeTracker\release. The card in index.html carries
+# __STAY_TUNED_VERSION__ until this step fills it in.
+$rel = Join-Path $apps 'AnimeTracker\release'
+$st = Get-ChildItem $rel -Filter 'stay-tuned-extension-*-private.zip' |
+  Sort-Object { [version]($_.Name -replace '^stay-tuned-extension-|-private\.zip$', '') } | Select-Object -Last 1
+if (-not $st) { throw 'No private Stay Tuned package in AnimeTracker\release' }
+$stVersion = $st.Name -replace '^stay-tuned-extension-|-private\.zip$', ''
+Get-ChildItem $out -Filter 'cour-*.zip' | Remove-Item
+Get-ChildItem $out -Filter 'stay-tuned-*.zip' | Remove-Item
+Copy-Item $st.FullName (Join-Path $out "stay-tuned-$stVersion.zip") -Force
+Copy-Item (Join-Path $apps 'AnimeTracker\apps\extension\public\icon\icon.svg') (Join-Path $assets 'stay-tuned.svg') -Force
+$index = Join-Path $site 'index.html'
+$html = [IO.File]::ReadAllText($index)
+$html = [regex]::Replace($html, 'stay-tuned-(__STAY_TUNED_VERSION__|[0-9][0-9.]*)\.zip', "stay-tuned-$stVersion.zip")
+# '.' stands for the middle dot: Windows PowerShell reads this file as ANSI
+$html = [regex]::Replace($html, 'v(__STAY_TUNED_VERSION__|[0-9][0-9.]*)( . Chrome, Edge, Brave<span class="size" data-size="downloads/stay-tuned-)', "v$stVersion`$2")
+[IO.File]::WriteAllText($index, $html, (New-Object Text.UTF8Encoding $false))
+
 Get-ChildItem $out | Select-Object Name, @{ n = 'KB'; e = { [math]::Ceiling($_.Length / 1KB) } }
 Write-Host 'If a version changed, update the download links in index.html.'

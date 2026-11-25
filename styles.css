@@ -137,33 +137,106 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; letter-spac
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
 .hero-art { flex: 1 1 320px; display: flex; justify-content: center; }
-.case { position: relative; width: 300px; max-width: 100%; color: var(--hero-text); }
-.case svg { display: block; width: 100%; height: auto; }
-.case .case-front { position: absolute; inset: 0; pointer-events: none; }
-.floater, .floor-glow {
+/* Hero cube: --rx/--ry (the turn) and --gx/--gy (where the glare sits) are set by the script in index.html */
+.cube-stage {
+  --s: 230px;
+  --h: calc(var(--s) / 2);
+  --p: 22px; /* plinth height */
+  --rx: -20deg;
+  --ry: -34deg;
+  --gx: 30%;
+  --gy: 20%;
+  position: relative;
+  width: calc(var(--s) * 1.7);
+  height: calc(var(--s) * 1.75);
+  perspective: 1100px;
+  display: grid;
+  place-items: center;
+}
+.cube {
+  position: relative;
+  width: var(--s);
+  height: var(--s);
+  transform-style: preserve-3d;
+  transform: translateY(calc(var(--p) * -0.5)) rotateX(var(--rx)) rotateY(var(--ry));
+}
+.cube > * { position: absolute; left: 0; top: 0; backface-visibility: visible; }
+.face {
+  width: var(--s);
+  height: var(--s);
+  border: 1.5px solid color-mix(in srgb, var(--hero-text) 75%, transparent);
+  background: linear-gradient(135deg, rgb(244 241 234 / 0.07), rgb(244 241 234 / 0.015) 60%);
+}
+/* Glare: a soft light that slides across the glass toward the mouse */
+.face.front, .face.right, .face.top {
+  background:
+    radial-gradient(circle at var(--gx) var(--gy), rgb(255 255 255 / 0.2), transparent 42%),
+    linear-gradient(135deg, rgb(244 241 234 / 0.08), rgb(244 241 234 / 0.02) 60%);
+}
+.face.back, .face.left { border-style: dashed; border-color: color-mix(in srgb, var(--hero-text) 30%, transparent); background: none; }
+.face.front { transform: translateZ(var(--h)); }
+.face.back { transform: rotateY(180deg) translateZ(var(--h)); }
+.face.right { transform: rotateY(90deg) translateZ(var(--h)); }
+.face.left { transform: rotateY(-90deg) translateZ(var(--h)); }
+.face.top { transform: rotateX(90deg) translateZ(var(--h)); }
+.face.floor {
+  transform: rotateX(-90deg) translateZ(var(--h));
+  border: 0;
+  background: #f4f1ea;
+  overflow: hidden;
+}
+/* The coloured light each app throws on the floor */
+.face.floor i {
   position: absolute;
-  left: calc(var(--x) / 240 * 100%);
-  top: calc(var(--y) / 260 * 100%);
+  left: var(--fx);
+  top: var(--fy);
+  width: 55%;
+  height: 55%;
   translate: -50% -50%;
-  animation: 6s ease-in-out var(--d) infinite;
-}
-.floater {
-  width: calc(var(--s) * 1%);
-  height: auto;
-  border-radius: 22%;
-  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hero-text) 40%, transparent), 0 10px 24px rgb(0 0 0 / 0.6);
-  animation-name: float;
-}
-.floater.back { filter: brightness(0.8); }
-.floor-glow {
-  width: 28%;
-  height: 9%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 60%, transparent), transparent);
-  animation-name: glow;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 45%, transparent), transparent);
 }
-@keyframes float { 50% { transform: translateY(-9%) rotate(-2deg); } }
-@keyframes glow { 50% { transform: scale(0.75); opacity: 0.55; } }
+/* Plinth: the cream slab under the cube, its sides painted with the site's stripes */
+.plinth {
+  width: var(--s);
+  height: var(--p);
+  background: linear-gradient(#f4f1ea 0 20%, var(--yellow) 20% 40%, var(--orange) 40% 60%, var(--red) 60% 80%, var(--deep) 80%);
+}
+.plinth.front { transform: translateY(calc(var(--h) * 2)) translateZ(var(--h)); }
+.plinth.right { transform: rotateY(90deg) translateY(calc(var(--h) * 2)) translateZ(var(--h)); }
+.plinth.back { transform: rotateY(180deg) translateY(calc(var(--h) * 2)) translateZ(var(--h)); }
+.plinth.left { transform: rotateY(-90deg) translateY(calc(var(--h) * 2)) translateZ(var(--h)); }
+/* Logos float inside at their own depth and counter-turn so they always face you */
+.logo {
+  width: calc(var(--s) * 0.3);
+  aspect-ratio: 1;
+  left: calc(var(--h) - var(--s) * 0.15);
+  top: calc(var(--h) - var(--s) * 0.15);
+  transform:
+    translate3d(calc(var(--x) * var(--h)), calc(var(--y) * var(--h)), calc(var(--z) * var(--h)))
+    rotateY(calc(var(--ry) * -1)) rotateX(calc(var(--rx) * -1));
+}
+.logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 22%;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--hero-text) 40%, transparent), 0 12px 26px rgb(0 0 0 / 0.55);
+  animation: float 6s ease-in-out var(--d) infinite;
+}
+.cube-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: calc(var(--s) * 1.3);
+  height: calc(var(--s) * 0.22);
+  translate: calc(-50% + var(--sx, 0px)) 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(240 138 44 / 0.22), transparent);
+  filter: blur(6px);
+  z-index: -1;
+}
+@keyframes float { 50% { transform: translateY(-10%); } }
 
 .stripes { height: 72px; background: var(--stripes); }
 
@@ -429,7 +502,7 @@ details b { color: var(--text); }
   .nav { gap: 16px; }
   .nav .nav-tip-text { display: none; } /* the cup icon alone, so Hardware fits and Sign in stays on this row */
   .nav .btn.light { display: none; } /* the hero's "Browse the apps" does the same; keeps Sign in on this row */
-  .case { width: 200px; }
+  .cube-stage { --s: 170px; }
   .stripes { height: 48px; }
   .apps { padding-top: 56px; }
   .tile { flex: 1 1 140px; min-height: 120px; }

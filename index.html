@@ -11,7 +11,7 @@
   <meta property="og:url" content="https://theconveniencesuite.com/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="fonts/newsreader-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=15">
 </head>
 <body>
   <header class="hero" id="top">
@@ -42,17 +42,24 @@
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
-        <!-- The case is drawn in two layers: hidden edges behind the logos, glass faces and visible edges in front.
-             --x/--y place each logo in the SVG's 240×260 coordinates; the glow sits on the floor below it. -->
-        <div class="case">
-          <svg class="case-back" viewBox="0 0 240 260" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M30 180 120 130 210 180M120 20v110" stroke-dasharray="4 4" opacity=".35"/></svg>
-          <span class="floor-glow" style="--x: 120; --y: 162; --c: #6a994e; --d: -1.6s"></span>
-          <span class="floor-glow" style="--x: 80; --y: 190; --c: #e4502b; --d: 0s"></span>
-          <span class="floor-glow" style="--x: 162; --y: 196; --c: #f08a2c; --d: -3.2s"></span>
-          <img class="floater back" src="assets/pantrypip.svg" alt="" style="--x: 120; --y: 88; --s: 19; --d: -1.6s">
-          <img class="floater" src="assets/turndown.svg" alt="" style="--x: 80; --y: 126; --s: 22; --d: 0s">
-          <img class="floater" src="assets/optout.svg" alt="" style="--x: 162; --y: 134; --s: 22; --d: -3.2s">
-          <svg class="case-front" viewBox="0 0 240 260" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M120 20 210 70 120 120 30 70Z" fill="currentColor" fill-opacity=".07" stroke="none"/><path d="M30 70 120 120v110L30 180Z" fill="currentColor" fill-opacity=".035" stroke="none"/><path d="M120 20 210 70 120 120 30 70Z"/><path d="M30 70v110l90 50 90-50V70M120 120v110"/><path d="M44 96v54M54 102v30" opacity=".5"/><path d="M30 180 120 230 210 180v18l-90 50-90-50Z" fill="#f4f1ea"/></svg>
+        <!-- A real 3D glass cube (CSS transforms) on a striped plinth. The script below turns it toward the mouse,
+             and sways it by itself on touch screens. Each logo floats at its own depth: --x/--y/--z are fractions
+             of half the cube's size, and the logos always turn to face you. -->
+        <div class="cube-stage" data-cube>
+          <div class="cube">
+            <span class="face floor"><i style="--fx: 30%; --fy: 62%; --c: #e4502b"></i><i style="--fx: 70%; --fy: 66%; --c: #f08a2c"></i><i style="--fx: 50%; --fy: 30%; --c: #6a994e"></i></span>
+            <span class="face back"></span>
+            <span class="face left"></span>
+            <span class="plinth front"></span><span class="plinth right"></span><span class="plinth back"></span><span class="plinth left"></span>
+            <span class="logo" style="--x: 0; --y: -0.5; --z: -0.25; --d: -1.6s"><img src="assets/pantrypip.svg" alt=""></span>
+            <span class="logo" style="--x: -0.5; --y: 0.02; --z: 0.2; --d: 0s"><img src="assets/turndown.svg" alt=""></span>
+            <span class="logo" style="--x: 0.5; --y: -0.08; --z: -0.15; --d: -3.2s"><img src="assets/optout.svg" alt=""></span>
+            <span class="logo" style="--x: 0.1; --y: 0.42; --z: 0.4; --d: -4.6s"><img src="assets/stay-tuned.svg" alt=""></span>
+            <span class="face right"></span>
+            <span class="face top"></span>
+            <span class="face front"></span>
+          </div>
+          <span class="cube-shadow"></span>
         </div>
       </div>
     </div>
@@ -382,6 +389,36 @@
   </dialog>
 
   <script>
+    // Hero cube: turns toward the mouse with a little lag, and the glare follows it. With no mouse
+    // (phones) or after 4 s without moving, it sways by itself. Stops drawing while the hero is off screen.
+    const stage = document.querySelector('[data-cube]');
+    if (stage) {
+      const calm = matchMedia('(prefers-reduced-motion: reduce)');
+      let tx = 0, ty = 0, x = 0, y = 0, lastMove = -Infinity, frame = 0;
+      addEventListener('pointermove', e => {
+        if (e.pointerType !== 'mouse') return;
+        const r = stage.getBoundingClientRect();
+        tx = Math.max(-1, Math.min(1, (e.clientX - r.left - r.width / 2) / (innerWidth / 2)));
+        ty = Math.max(-1, Math.min(1, (e.clientY - r.top - r.height / 2) / (innerHeight / 2)));
+        lastMove = performance.now();
+      }, { passive: true });
+      const draw = t => {
+        if (t - lastMove > 4000) [tx, ty] = calm.matches ? [0, 0] : [Math.sin(t / 2600) * 0.45, Math.sin(t / 3700) * 0.3];
+        x += (tx - x) * 0.07;
+        y += (ty - y) * 0.07;
+        stage.style.setProperty('--ry', `${-34 + x * 30}deg`);
+        stage.style.setProperty('--rx', `${-20 - y * 16}deg`);
+        stage.style.setProperty('--gx', `${50 + x * 45}%`);
+        stage.style.setProperty('--gy', `${40 + y * 45}%`);
+        stage.style.setProperty('--sx', `${x * -24}px`);
+        frame = requestAnimationFrame(draw);
+      };
+      new IntersectionObserver(([entry]) => {
+        cancelAnimationFrame(frame);
+        if (entry.isIntersecting) frame = requestAnimationFrame(draw);
+      }).observe(stage);
+    }
+
     // Signed in? private.js leaves the username in localStorage, so other visitors make no request.
     // Show it at once, then ask the login server whether the session is still valid.
     const account = document.querySelector('[data-account]');
